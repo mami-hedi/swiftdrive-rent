@@ -10,33 +10,88 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as VehiculesRouteImport } from './routes/vehicules'
+import { Route as ConfirmationReferenceRouteImport } from './routes/confirmation.$reference'
+import { Route as ReserverIdRouteImport } from './routes/reserver.$id'
+import { Route as VehiculesIdRouteImport } from './routes/vehicules.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VehiculesRoute = VehiculesRouteImport.update({
+  id: '/vehicules',
+  path: '/vehicules',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConfirmationReferenceRoute = ConfirmationReferenceRouteImport.update({
+  id: '/confirmation/$reference',
+  path: '/confirmation/$reference',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReserverIdRoute = ReserverIdRouteImport.update({
+  id: '/reserver/$id',
+  path: '/reserver/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VehiculesIdRoute = VehiculesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => VehiculesRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/vehicules': typeof VehiculesRouteWithChildren
+  '/confirmation/$reference': typeof ConfirmationReferenceRoute
+  '/reserver/$id': typeof ReserverIdRoute
+  '/vehicules/$id': typeof VehiculesIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/vehicules': typeof VehiculesRouteWithChildren
+  '/confirmation/$reference': typeof ConfirmationReferenceRoute
+  '/reserver/$id': typeof ReserverIdRoute
+  '/vehicules/$id': typeof VehiculesIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/vehicules': typeof VehiculesRouteWithChildren
+  '/confirmation/$reference': typeof ConfirmationReferenceRoute
+  '/reserver/$id': typeof ReserverIdRoute
+  '/vehicules/$id': typeof VehiculesIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/vehicules'
+    | '/confirmation/$reference'
+    | '/reserver/$id'
+    | '/vehicules/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/vehicules'
+    | '/confirmation/$reference'
+    | '/reserver/$id'
+    | '/vehicules/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/vehicules'
+    | '/confirmation/$reference'
+    | '/reserver/$id'
+    | '/vehicules/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  VehiculesRoute: typeof VehiculesRouteWithChildren
+  ConfirmationReferenceRoute: typeof ConfirmationReferenceRoute
+  ReserverIdRoute: typeof ReserverIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +103,54 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/vehicules': {
+      id: '/vehicules'
+      path: '/vehicules'
+      fullPath: '/vehicules'
+      preLoaderRoute: typeof VehiculesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/confirmation/$reference': {
+      id: '/confirmation/$reference'
+      path: '/confirmation/$reference'
+      fullPath: '/confirmation/$reference'
+      preLoaderRoute: typeof ConfirmationReferenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reserver/$id': {
+      id: '/reserver/$id'
+      path: '/reserver/$id'
+      fullPath: '/reserver/$id'
+      preLoaderRoute: typeof ReserverIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/vehicules/$id': {
+      id: '/vehicules/$id'
+      path: '/$id'
+      fullPath: '/vehicules/$id'
+      preLoaderRoute: typeof VehiculesIdRouteImport
+      parentRoute: typeof VehiculesRoute
+    }
   }
 }
 
+interface VehiculesRouteChildren {
+  VehiculesIdRoute: typeof VehiculesIdRoute
+}
+
+const VehiculesRouteChildren: VehiculesRouteChildren = {
+  VehiculesIdRoute: VehiculesIdRoute,
+}
+
+const VehiculesRouteWithChildren = VehiculesRoute._addFileChildren(
+  VehiculesRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  VehiculesRoute: VehiculesRouteWithChildren,
+  ConfirmationReferenceRoute: ConfirmationReferenceRoute,
+  ReserverIdRoute: ReserverIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

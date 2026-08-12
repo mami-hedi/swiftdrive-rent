@@ -22,10 +22,10 @@ import {
 } from "@/lib/domain";
 
 interface BookingSearch {
-  start?: string;
-  end?: string;
-  pickup?: string;
-  dropoff?: string;
+  start: string | undefined;
+  end: string | undefined;
+  pickup: string | undefined;
+  dropoff: string | undefined;
 }
 
 export const Route = createFileRoute("/reserver/$id")({
