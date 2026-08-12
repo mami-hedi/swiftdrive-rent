@@ -14,16 +14,469 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      contact_messages: {
+        Row: {
+          created_at: string
+          email: string
+          handled: boolean
+          id: string
+          message: string
+          name: string
+          phone: string | null
+          subject: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          handled?: boolean
+          id?: string
+          message: string
+          name: string
+          phone?: string | null
+          subject?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          handled?: boolean
+          id?: string
+          message?: string
+          name?: string
+          phone?: string | null
+          subject?: string | null
+        }
+        Relationships: []
+      }
+      locations: {
+        Row: {
+          active: boolean
+          address: string | null
+          created_at: string
+          id: string
+          name: string
+        }
+        Insert: {
+          active?: boolean
+          address?: string | null
+          created_at?: string
+          id?: string
+          name: string
+        }
+        Update: {
+          active?: boolean
+          address?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          address: string | null
+          created_at: string
+          email: string | null
+          first_name: string | null
+          id: string
+          last_name: string | null
+          license_number: string | null
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          email?: string | null
+          first_name?: string | null
+          id: string
+          last_name?: string | null
+          license_number?: string | null
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          email?: string | null
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          license_number?: string | null
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      rental_options: {
+        Row: {
+          active: boolean
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          price_per_day: number
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          price_per_day: number
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          price_per_day?: number
+        }
+        Relationships: []
+      }
+      reservation_options: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          option_id: string | null
+          price_per_day: number
+          reservation_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          option_id?: string | null
+          price_per_day: number
+          reservation_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          option_id?: string | null
+          price_per_day?: number
+          reservation_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reservation_options_option_id_fkey"
+            columns: ["option_id"]
+            isOneToOne: false
+            referencedRelation: "rental_options"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reservation_options_reservation_id_fkey"
+            columns: ["reservation_id"]
+            isOneToOne: false
+            referencedRelation: "reservations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reservations: {
+        Row: {
+          address: string | null
+          created_at: string
+          daily_rate: number
+          days: number
+          dropoff_location: string
+          email: string
+          end_at: string
+          first_name: string
+          id: string
+          last_name: string
+          license_number: string | null
+          notes: string | null
+          options_total: number
+          phone: string
+          pickup_location: string
+          reference: string
+          start_at: string
+          status: Database["public"]["Enums"]["reservation_status"]
+          total: number
+          updated_at: string
+          user_id: string | null
+          vehicle_id: string
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          daily_rate: number
+          days: number
+          dropoff_location: string
+          email: string
+          end_at: string
+          first_name: string
+          id?: string
+          last_name: string
+          license_number?: string | null
+          notes?: string | null
+          options_total?: number
+          phone: string
+          pickup_location: string
+          reference?: string
+          start_at: string
+          status?: Database["public"]["Enums"]["reservation_status"]
+          total: number
+          updated_at?: string
+          user_id?: string | null
+          vehicle_id: string
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          daily_rate?: number
+          days?: number
+          dropoff_location?: string
+          email?: string
+          end_at?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          license_number?: string | null
+          notes?: string | null
+          options_total?: number
+          phone?: string
+          pickup_location?: string
+          reference?: string
+          start_at?: string
+          status?: Database["public"]["Enums"]["reservation_status"]
+          total?: number
+          updated_at?: string
+          user_id?: string | null
+          vehicle_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reservations_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      seasonal_rates: {
+        Row: {
+          created_at: string
+          daily_price: number | null
+          end_date: string
+          id: string
+          multiplier: number
+          name: string
+          start_date: string
+          vehicle_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          daily_price?: number | null
+          end_date: string
+          id?: string
+          multiplier?: number
+          name: string
+          start_date: string
+          vehicle_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          daily_price?: number | null
+          end_date?: string
+          id?: string
+          multiplier?: number
+          name?: string
+          start_date?: string
+          vehicle_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seasonal_rates_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      settings: {
+        Row: {
+          address: string | null
+          company_name: string
+          currency: string
+          email: string | null
+          facebook: string | null
+          id: number
+          instagram: string | null
+          linkedin: string | null
+          logo_url: string | null
+          opening_hours: string | null
+          phone: string | null
+          terms: string | null
+          updated_at: string
+          vat_rate: number
+        }
+        Insert: {
+          address?: string | null
+          company_name?: string
+          currency?: string
+          email?: string | null
+          facebook?: string | null
+          id?: number
+          instagram?: string | null
+          linkedin?: string | null
+          logo_url?: string | null
+          opening_hours?: string | null
+          phone?: string | null
+          terms?: string | null
+          updated_at?: string
+          vat_rate?: number
+        }
+        Update: {
+          address?: string | null
+          company_name?: string
+          currency?: string
+          email?: string | null
+          facebook?: string | null
+          id?: number
+          instagram?: string | null
+          linkedin?: string | null
+          logo_url?: string | null
+          opening_hours?: string | null
+          phone?: string | null
+          terms?: string | null
+          updated_at?: string
+          vat_rate?: number
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      vehicles: {
+        Row: {
+          brand: string
+          category: string
+          created_at: string
+          daily_price: number
+          description: string | null
+          doors: number
+          features: string[]
+          fuel: string
+          id: string
+          images: string[]
+          luggage: number
+          mileage: number
+          model: string
+          monthly_price: number | null
+          seats: number
+          status: Database["public"]["Enums"]["vehicle_status"]
+          transmission: string
+          updated_at: string
+          weekly_price: number | null
+          year: number
+        }
+        Insert: {
+          brand: string
+          category: string
+          created_at?: string
+          daily_price: number
+          description?: string | null
+          doors?: number
+          features?: string[]
+          fuel: string
+          id?: string
+          images?: string[]
+          luggage?: number
+          mileage?: number
+          model: string
+          monthly_price?: number | null
+          seats?: number
+          status?: Database["public"]["Enums"]["vehicle_status"]
+          transmission: string
+          updated_at?: string
+          weekly_price?: number | null
+          year: number
+        }
+        Update: {
+          brand?: string
+          category?: string
+          created_at?: string
+          daily_price?: number
+          description?: string | null
+          doors?: number
+          features?: string[]
+          fuel?: string
+          id?: string
+          images?: string[]
+          luggage?: number
+          mileage?: number
+          model?: string
+          monthly_price?: number | null
+          seats?: number
+          status?: Database["public"]["Enums"]["vehicle_status"]
+          transmission?: string
+          updated_at?: string
+          weekly_price?: number | null
+          year?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      available_vehicle_ids: {
+        Args: { _end: string; _start: string }
+        Returns: {
+          vehicle_id: string
+        }[]
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_staff: { Args: { _user_id: string }; Returns: boolean }
+      vehicle_busy_ranges: {
+        Args: { _vehicle_id: string }
+        Returns: {
+          end_at: string
+          start_at: string
+        }[]
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "manager" | "client"
+      reservation_status:
+        | "pending"
+        | "confirmed"
+        | "ongoing"
+        | "completed"
+        | "cancelled"
+      vehicle_status: "available" | "rented" | "maintenance" | "disabled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +603,16 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "manager", "client"],
+      reservation_status: [
+        "pending",
+        "confirmed",
+        "ongoing",
+        "completed",
+        "cancelled",
+      ],
+      vehicle_status: ["available", "rented", "maintenance", "disabled"],
+    },
   },
 } as const
