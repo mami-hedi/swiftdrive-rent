@@ -10,33 +10,299 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AProposRouteImport } from './routes/a-propos'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as CommentCaMarcheRouteImport } from './routes/comment-ca-marche'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as VehiculesRouteImport } from './routes/vehicules'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedCompteRouteImport } from './routes/_authenticated/compte'
+import { Route as ConfirmationReferenceRouteImport } from './routes/confirmation.$reference'
+import { Route as ReserverIdRouteImport } from './routes/reserver.$id'
+import { Route as VehiculesIdRouteImport } from './routes/vehicules.$id'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as AuthenticatedAdminCalendrierRouteImport } from './routes/_authenticated/admin.calendrier'
+import { Route as AuthenticatedAdminClientsRouteImport } from './routes/_authenticated/admin.clients'
+import { Route as AuthenticatedAdminOptionsRouteImport } from './routes/_authenticated/admin.options'
+import { Route as AuthenticatedAdminParametresRouteImport } from './routes/_authenticated/admin.parametres'
+import { Route as AuthenticatedAdminReservationsRouteImport } from './routes/_authenticated/admin.reservations'
+import { Route as AuthenticatedAdminVehiculesRouteImport } from './routes/_authenticated/admin.vehicules'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AProposRoute = AProposRouteImport.update({
+  id: '/a-propos',
+  path: '/a-propos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommentCaMarcheRoute = CommentCaMarcheRouteImport.update({
+  id: '/comment-ca-marche',
+  path: '/comment-ca-marche',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VehiculesRoute = VehiculesRouteImport.update({
+  id: '/vehicules',
+  path: '/vehicules',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedCompteRoute = AuthenticatedCompteRouteImport.update({
+  id: '/compte',
+  path: '/compte',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const ConfirmationReferenceRoute = ConfirmationReferenceRouteImport.update({
+  id: '/confirmation/$reference',
+  path: '/confirmation/$reference',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReserverIdRoute = ReserverIdRouteImport.update({
+  id: '/reserver/$id',
+  path: '/reserver/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VehiculesIdRoute = VehiculesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => VehiculesRoute,
+} as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminCalendrierRoute =
+  AuthenticatedAdminCalendrierRouteImport.update({
+    id: '/calendrier',
+    path: '/calendrier',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminClientsRoute =
+  AuthenticatedAdminClientsRouteImport.update({
+    id: '/clients',
+    path: '/clients',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminOptionsRoute =
+  AuthenticatedAdminOptionsRouteImport.update({
+    id: '/options',
+    path: '/options',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminParametresRoute =
+  AuthenticatedAdminParametresRouteImport.update({
+    id: '/parametres',
+    path: '/parametres',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminReservationsRoute =
+  AuthenticatedAdminReservationsRouteImport.update({
+    id: '/reservations',
+    path: '/reservations',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminVehiculesRoute =
+  AuthenticatedAdminVehiculesRouteImport.update({
+    id: '/vehicules',
+    path: '/vehicules',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/a-propos': typeof AProposRoute
+  '/auth': typeof AuthRoute
+  '/comment-ca-marche': typeof CommentCaMarcheRoute
+  '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
+  '/privacy': typeof PrivacyRoute
+  '/terms': typeof TermsRoute
+  '/vehicules': typeof VehiculesRouteWithChildren
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/compte': typeof AuthenticatedCompteRoute
+  '/confirmation/$reference': typeof ConfirmationReferenceRoute
+  '/reserver/$id': typeof ReserverIdRoute
+  '/vehicules/$id': typeof VehiculesIdRoute
+  '/admin/calendrier': typeof AuthenticatedAdminCalendrierRoute
+  '/admin/clients': typeof AuthenticatedAdminClientsRoute
+  '/admin/options': typeof AuthenticatedAdminOptionsRoute
+  '/admin/parametres': typeof AuthenticatedAdminParametresRoute
+  '/admin/reservations': typeof AuthenticatedAdminReservationsRoute
+  '/admin/vehicules': typeof AuthenticatedAdminVehiculesRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/a-propos': typeof AProposRoute
+  '/auth': typeof AuthRoute
+  '/comment-ca-marche': typeof CommentCaMarcheRoute
+  '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
+  '/privacy': typeof PrivacyRoute
+  '/terms': typeof TermsRoute
+  '/vehicules': typeof VehiculesRouteWithChildren
+  '/compte': typeof AuthenticatedCompteRoute
+  '/confirmation/$reference': typeof ConfirmationReferenceRoute
+  '/reserver/$id': typeof ReserverIdRoute
+  '/vehicules/$id': typeof VehiculesIdRoute
+  '/admin/calendrier': typeof AuthenticatedAdminCalendrierRoute
+  '/admin/clients': typeof AuthenticatedAdminClientsRoute
+  '/admin/options': typeof AuthenticatedAdminOptionsRoute
+  '/admin/parametres': typeof AuthenticatedAdminParametresRoute
+  '/admin/reservations': typeof AuthenticatedAdminReservationsRoute
+  '/admin/vehicules': typeof AuthenticatedAdminVehiculesRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/a-propos': typeof AProposRoute
+  '/auth': typeof AuthRoute
+  '/comment-ca-marche': typeof CommentCaMarcheRoute
+  '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
+  '/privacy': typeof PrivacyRoute
+  '/terms': typeof TermsRoute
+  '/vehicules': typeof VehiculesRouteWithChildren
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/_authenticated/compte': typeof AuthenticatedCompteRoute
+  '/confirmation/$reference': typeof ConfirmationReferenceRoute
+  '/reserver/$id': typeof ReserverIdRoute
+  '/vehicules/$id': typeof VehiculesIdRoute
+  '/_authenticated/admin/calendrier': typeof AuthenticatedAdminCalendrierRoute
+  '/_authenticated/admin/clients': typeof AuthenticatedAdminClientsRoute
+  '/_authenticated/admin/options': typeof AuthenticatedAdminOptionsRoute
+  '/_authenticated/admin/parametres': typeof AuthenticatedAdminParametresRoute
+  '/_authenticated/admin/reservations': typeof AuthenticatedAdminReservationsRoute
+  '/_authenticated/admin/vehicules': typeof AuthenticatedAdminVehiculesRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/a-propos'
+    | '/auth'
+    | '/comment-ca-marche'
+    | '/contact'
+    | '/faq'
+    | '/privacy'
+    | '/terms'
+    | '/vehicules'
+    | '/admin'
+    | '/compte'
+    | '/confirmation/$reference'
+    | '/reserver/$id'
+    | '/vehicules/$id'
+    | '/admin/calendrier'
+    | '/admin/clients'
+    | '/admin/options'
+    | '/admin/parametres'
+    | '/admin/reservations'
+    | '/admin/vehicules'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/a-propos'
+    | '/auth'
+    | '/comment-ca-marche'
+    | '/contact'
+    | '/faq'
+    | '/privacy'
+    | '/terms'
+    | '/vehicules'
+    | '/compte'
+    | '/confirmation/$reference'
+    | '/reserver/$id'
+    | '/vehicules/$id'
+    | '/admin/calendrier'
+    | '/admin/clients'
+    | '/admin/options'
+    | '/admin/parametres'
+    | '/admin/reservations'
+    | '/admin/vehicules'
+    | '/admin'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/a-propos'
+    | '/auth'
+    | '/comment-ca-marche'
+    | '/contact'
+    | '/faq'
+    | '/privacy'
+    | '/terms'
+    | '/vehicules'
+    | '/_authenticated/admin'
+    | '/_authenticated/compte'
+    | '/confirmation/$reference'
+    | '/reserver/$id'
+    | '/vehicules/$id'
+    | '/_authenticated/admin/calendrier'
+    | '/_authenticated/admin/clients'
+    | '/_authenticated/admin/options'
+    | '/_authenticated/admin/parametres'
+    | '/_authenticated/admin/reservations'
+    | '/_authenticated/admin/vehicules'
+    | '/_authenticated/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AProposRoute: typeof AProposRoute
+  AuthRoute: typeof AuthRoute
+  CommentCaMarcheRoute: typeof CommentCaMarcheRoute
+  ContactRoute: typeof ContactRoute
+  FaqRoute: typeof FaqRoute
+  PrivacyRoute: typeof PrivacyRoute
+  TermsRoute: typeof TermsRoute
+  VehiculesRoute: typeof VehiculesRouteWithChildren
+  ConfirmationReferenceRoute: typeof ConfirmationReferenceRoute
+  ReserverIdRoute: typeof ReserverIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +314,217 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/a-propos': {
+      id: '/a-propos'
+      path: '/a-propos'
+      fullPath: '/a-propos'
+      preLoaderRoute: typeof AProposRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/comment-ca-marche': {
+      id: '/comment-ca-marche'
+      path: '/comment-ca-marche'
+      fullPath: '/comment-ca-marche'
+      preLoaderRoute: typeof CommentCaMarcheRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/vehicules': {
+      id: '/vehicules'
+      path: '/vehicules'
+      fullPath: '/vehicules'
+      preLoaderRoute: typeof VehiculesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/compte': {
+      id: '/_authenticated/compte'
+      path: '/compte'
+      fullPath: '/compte'
+      preLoaderRoute: typeof AuthenticatedCompteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/confirmation/$reference': {
+      id: '/confirmation/$reference'
+      path: '/confirmation/$reference'
+      fullPath: '/confirmation/$reference'
+      preLoaderRoute: typeof ConfirmationReferenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reserver/$id': {
+      id: '/reserver/$id'
+      path: '/reserver/$id'
+      fullPath: '/reserver/$id'
+      preLoaderRoute: typeof ReserverIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/vehicules/$id': {
+      id: '/vehicules/$id'
+      path: '/$id'
+      fullPath: '/vehicules/$id'
+      preLoaderRoute: typeof VehiculesIdRouteImport
+      parentRoute: typeof VehiculesRoute
+    }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/calendrier': {
+      id: '/_authenticated/admin/calendrier'
+      path: '/calendrier'
+      fullPath: '/admin/calendrier'
+      preLoaderRoute: typeof AuthenticatedAdminCalendrierRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/clients': {
+      id: '/_authenticated/admin/clients'
+      path: '/clients'
+      fullPath: '/admin/clients'
+      preLoaderRoute: typeof AuthenticatedAdminClientsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/options': {
+      id: '/_authenticated/admin/options'
+      path: '/options'
+      fullPath: '/admin/options'
+      preLoaderRoute: typeof AuthenticatedAdminOptionsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/parametres': {
+      id: '/_authenticated/admin/parametres'
+      path: '/parametres'
+      fullPath: '/admin/parametres'
+      preLoaderRoute: typeof AuthenticatedAdminParametresRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/reservations': {
+      id: '/_authenticated/admin/reservations'
+      path: '/reservations'
+      fullPath: '/admin/reservations'
+      preLoaderRoute: typeof AuthenticatedAdminReservationsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/vehicules': {
+      id: '/_authenticated/admin/vehicules'
+      path: '/vehicules'
+      fullPath: '/admin/vehicules'
+      preLoaderRoute: typeof AuthenticatedAdminVehiculesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
   }
 }
 
+interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminCalendrierRoute: typeof AuthenticatedAdminCalendrierRoute
+  AuthenticatedAdminClientsRoute: typeof AuthenticatedAdminClientsRoute
+  AuthenticatedAdminOptionsRoute: typeof AuthenticatedAdminOptionsRoute
+  AuthenticatedAdminParametresRoute: typeof AuthenticatedAdminParametresRoute
+  AuthenticatedAdminReservationsRoute: typeof AuthenticatedAdminReservationsRoute
+  AuthenticatedAdminVehiculesRoute: typeof AuthenticatedAdminVehiculesRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+}
+
+const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminCalendrierRoute: AuthenticatedAdminCalendrierRoute,
+  AuthenticatedAdminClientsRoute: AuthenticatedAdminClientsRoute,
+  AuthenticatedAdminOptionsRoute: AuthenticatedAdminOptionsRoute,
+  AuthenticatedAdminParametresRoute: AuthenticatedAdminParametresRoute,
+  AuthenticatedAdminReservationsRoute: AuthenticatedAdminReservationsRoute,
+  AuthenticatedAdminVehiculesRoute: AuthenticatedAdminVehiculesRoute,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+}
+
+const AuthenticatedAdminRouteWithChildren =
+  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
+  AuthenticatedCompteRoute: typeof AuthenticatedCompteRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
+  AuthenticatedCompteRoute: AuthenticatedCompteRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
+interface VehiculesRouteChildren {
+  VehiculesIdRoute: typeof VehiculesIdRoute
+}
+
+const VehiculesRouteChildren: VehiculesRouteChildren = {
+  VehiculesIdRoute: VehiculesIdRoute,
+}
+
+const VehiculesRouteWithChildren = VehiculesRoute._addFileChildren(
+  VehiculesRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AProposRoute: AProposRoute,
+  AuthRoute: AuthRoute,
+  CommentCaMarcheRoute: CommentCaMarcheRoute,
+  ContactRoute: ContactRoute,
+  FaqRoute: FaqRoute,
+  PrivacyRoute: PrivacyRoute,
+  TermsRoute: TermsRoute,
+  VehiculesRoute: VehiculesRouteWithChildren,
+  ConfirmationReferenceRoute: ConfirmationReferenceRoute,
+  ReserverIdRoute: ReserverIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
