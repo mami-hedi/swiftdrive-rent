@@ -14,9 +14,9 @@ import { fetchAvailableIds, fetchVehicles } from "@/services/api";
 import { CATEGORIES, FUELS, TRANSMISSIONS, formatDateTime } from "@/lib/domain";
 
 interface VehicleSearch {
-  start: string | undefined;
-  end: string | undefined;
-  pickup: string | undefined;
+  start?: string | undefined;
+  end?: string | undefined;
+  pickup?: string | undefined;
 }
 
 export const Route = createFileRoute("/vehicules")({

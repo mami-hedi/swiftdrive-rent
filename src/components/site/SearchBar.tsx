@@ -9,7 +9,7 @@ import { fetchLocations } from "@/services/api";
 import { combineDateTime, toDateInput } from "@/lib/domain";
 
 interface Props {
-  defaults?: { pickup?: string; start?: string; end?: string };
+  defaults?: { pickup?: string | undefined; start?: string | undefined; end?: string | undefined };
   variant?: "hero" | "inline";
 }
 

@@ -10,6 +10,13 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AProposRouteImport } from './routes/a-propos'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as CommentCaMarcheRouteImport } from './routes/comment-ca-marche'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as VehiculesRouteImport } from './routes/vehicules'
 import { Route as ConfirmationReferenceRouteImport } from './routes/confirmation.$reference'
 import { Route as ReserverIdRouteImport } from './routes/reserver.$id'
@@ -18,6 +25,41 @@ import { Route as VehiculesIdRouteImport } from './routes/vehicules.$id'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AProposRoute = AProposRouteImport.update({
+  id: '/a-propos',
+  path: '/a-propos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommentCaMarcheRoute = CommentCaMarcheRouteImport.update({
+  id: '/comment-ca-marche',
+  path: '/comment-ca-marche',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const VehiculesRoute = VehiculesRouteImport.update({
@@ -43,6 +85,13 @@ const VehiculesIdRoute = VehiculesIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/a-propos': typeof AProposRoute
+  '/auth': typeof AuthRoute
+  '/comment-ca-marche': typeof CommentCaMarcheRoute
+  '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
+  '/privacy': typeof PrivacyRoute
+  '/terms': typeof TermsRoute
   '/vehicules': typeof VehiculesRouteWithChildren
   '/confirmation/$reference': typeof ConfirmationReferenceRoute
   '/reserver/$id': typeof ReserverIdRoute
@@ -50,6 +99,13 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/a-propos': typeof AProposRoute
+  '/auth': typeof AuthRoute
+  '/comment-ca-marche': typeof CommentCaMarcheRoute
+  '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
+  '/privacy': typeof PrivacyRoute
+  '/terms': typeof TermsRoute
   '/vehicules': typeof VehiculesRouteWithChildren
   '/confirmation/$reference': typeof ConfirmationReferenceRoute
   '/reserver/$id': typeof ReserverIdRoute
@@ -58,6 +114,13 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/a-propos': typeof AProposRoute
+  '/auth': typeof AuthRoute
+  '/comment-ca-marche': typeof CommentCaMarcheRoute
+  '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
+  '/privacy': typeof PrivacyRoute
+  '/terms': typeof TermsRoute
   '/vehicules': typeof VehiculesRouteWithChildren
   '/confirmation/$reference': typeof ConfirmationReferenceRoute
   '/reserver/$id': typeof ReserverIdRoute
@@ -67,6 +130,13 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/a-propos'
+    | '/auth'
+    | '/comment-ca-marche'
+    | '/contact'
+    | '/faq'
+    | '/privacy'
+    | '/terms'
     | '/vehicules'
     | '/confirmation/$reference'
     | '/reserver/$id'
@@ -74,6 +144,13 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/a-propos'
+    | '/auth'
+    | '/comment-ca-marche'
+    | '/contact'
+    | '/faq'
+    | '/privacy'
+    | '/terms'
     | '/vehicules'
     | '/confirmation/$reference'
     | '/reserver/$id'
@@ -81,6 +158,13 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/a-propos'
+    | '/auth'
+    | '/comment-ca-marche'
+    | '/contact'
+    | '/faq'
+    | '/privacy'
+    | '/terms'
     | '/vehicules'
     | '/confirmation/$reference'
     | '/reserver/$id'
@@ -89,6 +173,13 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AProposRoute: typeof AProposRoute
+  AuthRoute: typeof AuthRoute
+  CommentCaMarcheRoute: typeof CommentCaMarcheRoute
+  ContactRoute: typeof ContactRoute
+  FaqRoute: typeof FaqRoute
+  PrivacyRoute: typeof PrivacyRoute
+  TermsRoute: typeof TermsRoute
   VehiculesRoute: typeof VehiculesRouteWithChildren
   ConfirmationReferenceRoute: typeof ConfirmationReferenceRoute
   ReserverIdRoute: typeof ReserverIdRoute
@@ -101,6 +192,55 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/a-propos': {
+      id: '/a-propos'
+      path: '/a-propos'
+      fullPath: '/a-propos'
+      preLoaderRoute: typeof AProposRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/comment-ca-marche': {
+      id: '/comment-ca-marche'
+      path: '/comment-ca-marche'
+      fullPath: '/comment-ca-marche'
+      preLoaderRoute: typeof CommentCaMarcheRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/vehicules': {
@@ -148,6 +288,13 @@ const VehiculesRouteWithChildren = VehiculesRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AProposRoute: AProposRoute,
+  AuthRoute: AuthRoute,
+  CommentCaMarcheRoute: CommentCaMarcheRoute,
+  ContactRoute: ContactRoute,
+  FaqRoute: FaqRoute,
+  PrivacyRoute: PrivacyRoute,
+  TermsRoute: TermsRoute,
   VehiculesRoute: VehiculesRouteWithChildren,
   ConfirmationReferenceRoute: ConfirmationReferenceRoute,
   ReserverIdRoute: ReserverIdRoute,
