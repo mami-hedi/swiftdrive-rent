@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CommentCaMarcheRouteImport } from './routes/comment-ca-marche'
@@ -18,13 +19,20 @@ import { Route as FaqRouteImport } from './routes/faq'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as VehiculesRouteImport } from './routes/vehicules'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedCompteRouteImport } from './routes/_authenticated/compte'
 import { Route as ConfirmationReferenceRouteImport } from './routes/confirmation.$reference'
 import { Route as ReserverIdRouteImport } from './routes/reserver.$id'
 import { Route as VehiculesIdRouteImport } from './routes/vehicules.$id'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AProposRoute = AProposRouteImport.update({
@@ -67,6 +75,16 @@ const VehiculesRoute = VehiculesRouteImport.update({
   path: '/vehicules',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedCompteRoute = AuthenticatedCompteRouteImport.update({
+  id: '/compte',
+  path: '/compte',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const ConfirmationReferenceRoute = ConfirmationReferenceRouteImport.update({
   id: '/confirmation/$reference',
   path: '/confirmation/$reference',
@@ -82,6 +100,11 @@ const VehiculesIdRoute = VehiculesIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => VehiculesRoute,
 } as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -93,9 +116,12 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/vehicules': typeof VehiculesRouteWithChildren
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/compte': typeof AuthenticatedCompteRoute
   '/confirmation/$reference': typeof ConfirmationReferenceRoute
   '/reserver/$id': typeof ReserverIdRoute
   '/vehicules/$id': typeof VehiculesIdRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -107,13 +133,16 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/vehicules': typeof VehiculesRouteWithChildren
+  '/compte': typeof AuthenticatedCompteRoute
   '/confirmation/$reference': typeof ConfirmationReferenceRoute
   '/reserver/$id': typeof ReserverIdRoute
   '/vehicules/$id': typeof VehiculesIdRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/a-propos': typeof AProposRoute
   '/auth': typeof AuthRoute
   '/comment-ca-marche': typeof CommentCaMarcheRoute
@@ -122,9 +151,12 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/vehicules': typeof VehiculesRouteWithChildren
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/_authenticated/compte': typeof AuthenticatedCompteRoute
   '/confirmation/$reference': typeof ConfirmationReferenceRoute
   '/reserver/$id': typeof ReserverIdRoute
   '/vehicules/$id': typeof VehiculesIdRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -138,9 +170,12 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/terms'
     | '/vehicules'
+    | '/admin'
+    | '/compte'
     | '/confirmation/$reference'
     | '/reserver/$id'
     | '/vehicules/$id'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -152,12 +187,15 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/terms'
     | '/vehicules'
+    | '/compte'
     | '/confirmation/$reference'
     | '/reserver/$id'
     | '/vehicules/$id'
+    | '/admin'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/a-propos'
     | '/auth'
     | '/comment-ca-marche'
@@ -166,13 +204,17 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/terms'
     | '/vehicules'
+    | '/_authenticated/admin'
+    | '/_authenticated/compte'
     | '/confirmation/$reference'
     | '/reserver/$id'
     | '/vehicules/$id'
+    | '/_authenticated/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AProposRoute: typeof AProposRoute
   AuthRoute: typeof AuthRoute
   CommentCaMarcheRoute: typeof CommentCaMarcheRoute
@@ -192,6 +234,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/a-propos': {
@@ -250,6 +299,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VehiculesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/compte': {
+      id: '/_authenticated/compte'
+      path: '/compte'
+      fullPath: '/compte'
+      preLoaderRoute: typeof AuthenticatedCompteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/confirmation/$reference': {
       id: '/confirmation/$reference'
       path: '/confirmation/$reference'
@@ -271,8 +334,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VehiculesIdRouteImport
       parentRoute: typeof VehiculesRoute
     }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
   }
 }
+
+interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+}
+
+const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+}
+
+const AuthenticatedAdminRouteWithChildren =
+  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
+  AuthenticatedCompteRoute: typeof AuthenticatedCompteRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
+  AuthenticatedCompteRoute: AuthenticatedCompteRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface VehiculesRouteChildren {
   VehiculesIdRoute: typeof VehiculesIdRoute
@@ -288,6 +382,7 @@ const VehiculesRouteWithChildren = VehiculesRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AProposRoute: AProposRoute,
   AuthRoute: AuthRoute,
   CommentCaMarcheRoute: CommentCaMarcheRoute,
