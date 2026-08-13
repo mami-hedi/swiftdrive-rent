@@ -59,6 +59,10 @@ export interface Reservation {
   total: number;
   status: ReservationStatus;
   created_at: string;
+  confirmed_at?: string | null;
+  cancelled_at?: string | null;
+  cancelled_by?: string | null;
+  cancellation_reason?: string | null;
   vehicles?: Pick<Vehicle, "id" | "brand" | "model" | "images" | "category"> | null;
 }
 
