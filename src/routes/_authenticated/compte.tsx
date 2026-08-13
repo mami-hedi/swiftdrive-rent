@@ -24,6 +24,8 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { fetchMyReservations } from "@/services/api";
+import { useRealtimeReservations } from "@/hooks/useRealtimeReservations";
+import { ReservationStatusTimeline } from "@/components/site/ReservationStatusTimeline";
 import { STATUS_LABELS, eur, formatDateTime, type Reservation } from "@/lib/domain";
 
 export const Route = createFileRoute("/_authenticated/compte")({
@@ -46,6 +48,14 @@ function ClientArea() {
     queryKey: ["my-reservations", user?.id],
     queryFn: () => fetchMyReservations(user!.id),
     enabled: Boolean(user),
+  });
+
+  useRealtimeReservations((payload) => {
+    const next = payload.new as { user_id?: string; status?: string; reference?: string } | null;
+    if (!next || next.user_id !== user?.id) return;
+    if (next.status === "confirmed") toast.success(`Réservation ${next.reference} confirmée par notre équipe.`);
+    if (next.status === "cancelled") toast.warning(`Réservation ${next.reference} annulée.`);
+    if (next.status === "ongoing") toast.info(`Location ${next.reference} démarrée. Bonne route !`);
   });
 
   const [profile, setProfile] = useState({ first_name: "", last_name: "", phone: "", address: "", license_number: "" });
@@ -75,12 +85,16 @@ function ClientArea() {
 
   const cancel = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("reservations").update({ status: "cancelled" }).eq("id", id);
+      const { error } = await supabase
+        .from("reservations")
+        .update({ status: "cancelled", cancellation_reason: "Annulée par le client" } as never)
+        .eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
       toast.success("Réservation annulée.");
       queryClient.invalidateQueries({ queryKey: ["my-reservations"] });
+      queryClient.invalidateQueries({ queryKey: ["busy-ranges"] });
     },
     onError: () => toast.error("Annulation impossible."),
   });
@@ -200,6 +214,14 @@ function ReservationCard({ r, onCancel }: { r: Reservation; onCancel: () => void
           {r.pickup_location} → {r.dropoff_location}
         </p>
         <p className="mt-3 text-xl font-semibold">{eur(Number(r.total))}</p>
+        <div className="mt-4">
+          <ReservationStatusTimeline
+            status={r.status}
+            confirmedAt={r.confirmed_at}
+            cancelledAt={r.cancelled_at}
+            cancellationReason={r.cancellation_reason}
+          />
+        </div>
       </div>
       <div className="flex flex-col gap-2 sm:justify-center">
         <Button asChild variant="outline" size="sm">

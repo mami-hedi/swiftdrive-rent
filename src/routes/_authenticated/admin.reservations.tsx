@@ -2,13 +2,28 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Radio } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchAllReservations } from "@/services/api";
-import { STATUS_LABELS, eur, formatDate, type ReservationStatus } from "@/lib/domain";
+import { useRealtimeReservations } from "@/hooks/useRealtimeReservations";
+import { STATUS_LABELS, eur, formatDate, formatDateTime, type Reservation, type ReservationStatus } from "@/lib/domain";
 
 export const Route = createFileRoute("/_authenticated/admin/reservations")({
   component: AdminReservations,
@@ -34,17 +49,36 @@ function AdminReservations() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
+  useRealtimeReservations();
+
   const update = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: ReservationStatus }) => {
-      const { error } = await supabase.from("reservations").update({ status }).eq("id", id);
+    mutationFn: async ({
+      id,
+      status,
+      reason,
+    }: {
+      id: string;
+      status: ReservationStatus;
+      reason?: string;
+    }) => {
+      const patch: Record<string, unknown> = { status };
+      if (status === "cancelled") patch['cancellation_reason'] = reason?.trim() || "Annulée par l'équipe Velora";
+      const { error } = await supabase.from("reservations").update(patch as never).eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => {
-      toast.success("Réservation mise à jour.");
+    onSuccess: (_d, vars) => {
+      toast.success(
+        vars.status === "confirmed"
+          ? "Réservation confirmée. Le client voit le nouveau statut immédiatement."
+          : vars.status === "cancelled"
+            ? "Réservation annulée. Les dates sont de nouveau disponibles."
+            : "Réservation mise à jour.",
+      );
       queryClient.invalidateQueries({ queryKey: ["all-reservations"] });
     },
     onError: (e: Error) => toast.error(e.message),
   });
+
 
   const now = new Date();
   const rows = (data ?? []).filter((r) => {
@@ -71,9 +105,14 @@ function AdminReservations() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold md:text-3xl">Réservations</h1>
-        <p className="mt-2 text-sm text-muted-foreground">{rows.length} réservation(s)</p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-semibold md:text-3xl">Réservations</h1>
+          <p className="mt-2 text-sm text-muted-foreground">{rows.length} réservation(s)</p>
+        </div>
+        <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5 text-xs text-muted-foreground">
+          <Radio className="size-3.5 animate-pulse text-accent" /> Mises à jour en temps réel
+        </span>
       </div>
 
       <div className="flex flex-wrap gap-2">
@@ -128,31 +167,49 @@ function AdminReservations() {
                   <Badge variant={r.status === "confirmed" ? "success" : r.status === "cancelled" ? "destructive" : "warning"}>
                     {STATUS_LABELS[r.status]}
                   </Badge>
+                  {r.status === "confirmed" && r.confirmed_at && (
+                    <span className="mt-1 block text-[11px] text-muted-foreground">le {formatDateTime(r.confirmed_at)}</span>
+                  )}
+                  {r.status === "cancelled" && (
+                    <span className="mt-1 block text-[11px] text-muted-foreground">
+                      {r.cancelled_at ? `le ${formatDateTime(r.cancelled_at)}` : null}
+                      {r.cancellation_reason ? ` · ${r.cancellation_reason}` : null}
+                    </span>
+                  )}
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex flex-wrap gap-1">
                     {r.status === "pending" && (
-                      <Button size="sm" variant="accent" onClick={() => update.mutate({ id: r.id, status: "confirmed" })}>
-                        Confirmer
-                      </Button>
+                      <ConfirmAction
+                        label="Confirmer"
+                        variant="accent"
+                        title={`Confirmer la réservation ${r.reference} ?`}
+                        description={`${r.first_name} ${r.last_name} · ${formatDate(r.start_at)} → ${formatDate(r.end_at)}. Le statut sera visible immédiatement dans l'espace client.`}
+                        actionLabel="Confirmer la réservation"
+                        disabled={update.isPending}
+                        onConfirm={() => update.mutate({ id: r.id, status: "confirmed" })}
+                      />
                     )}
                     {r.status === "confirmed" && (
-                      <Button size="sm" variant="outline" onClick={() => update.mutate({ id: r.id, status: "ongoing" })}>
+                      <Button size="sm" variant="outline" disabled={update.isPending} onClick={() => update.mutate({ id: r.id, status: "ongoing" })}>
                         Démarrer
                       </Button>
                     )}
                     {r.status === "ongoing" && (
-                      <Button size="sm" variant="outline" onClick={() => update.mutate({ id: r.id, status: "completed" })}>
+                      <Button size="sm" variant="outline" disabled={update.isPending} onClick={() => update.mutate({ id: r.id, status: "completed" })}>
                         Terminer
                       </Button>
                     )}
                     {r.status !== "cancelled" && r.status !== "completed" && (
-                      <Button size="sm" variant="ghost" onClick={() => update.mutate({ id: r.id, status: "cancelled" })}>
-                        Annuler
-                      </Button>
+                      <CancelAction
+                        reservation={r}
+                        disabled={update.isPending}
+                        onConfirm={(reason) => update.mutate({ id: r.id, status: "cancelled", reason })}
+                      />
                     )}
                   </div>
                 </td>
+
               </tr>
             ))}
             {paged.length === 0 && (
@@ -174,5 +231,82 @@ function AdminReservations() {
         </div>
       </div>
     </div>
+  );
+}
+
+function ConfirmAction({
+  label,
+  title,
+  description,
+  actionLabel,
+  variant = "accent",
+  disabled,
+  onConfirm,
+}: {
+  label: string;
+  title: string;
+  description: string;
+  actionLabel: string;
+  variant?: "accent" | "outline" | "ghost";
+  disabled?: boolean;
+  onConfirm: () => void;
+}) {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button size="sm" variant={variant} disabled={disabled}>{label}</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogDescription>{description}</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Retour</AlertDialogCancel>
+          <AlertDialogAction onClick={onConfirm}>{actionLabel}</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
+function CancelAction({
+  reservation,
+  disabled,
+  onConfirm,
+}: {
+  reservation: Reservation;
+  disabled?: boolean;
+  onConfirm: (reason: string) => void;
+}) {
+  const [reason, setReason] = useState("");
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button size="sm" variant="ghost" disabled={disabled}>Annuler</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Annuler la réservation {reservation.reference} ?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Le véhicule redeviendra disponible sur ces dates et le client verra l'annulation ainsi que son motif dans son
+            espace.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <div className="space-y-1.5">
+          <Label className="text-xs uppercase text-muted-foreground">Motif communiqué au client</Label>
+          <Textarea
+            rows={3}
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            placeholder="Véhicule indisponible, demande du client, dossier incomplet…"
+          />
+        </div>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Retour</AlertDialogCancel>
+          <AlertDialogAction onClick={() => onConfirm(reason)}>Confirmer l'annulation</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
