@@ -2,13 +2,28 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Radio } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchAllReservations } from "@/services/api";
-import { STATUS_LABELS, eur, formatDate, type ReservationStatus } from "@/lib/domain";
+import { useRealtimeReservations } from "@/hooks/useRealtimeReservations";
+import { STATUS_LABELS, eur, formatDate, formatDateTime, type Reservation, type ReservationStatus } from "@/lib/domain";
 
 export const Route = createFileRoute("/_authenticated/admin/reservations")({
   component: AdminReservations,
@@ -34,17 +49,36 @@ function AdminReservations() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
+  useRealtimeReservations();
+
   const update = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: ReservationStatus }) => {
-      const { error } = await supabase.from("reservations").update({ status }).eq("id", id);
+    mutationFn: async ({
+      id,
+      status,
+      reason,
+    }: {
+      id: string;
+      status: ReservationStatus;
+      reason?: string;
+    }) => {
+      const patch: Record<string, unknown> = { status };
+      if (status === "cancelled") patch['cancellation_reason'] = reason?.trim() || "Annulée par l'équipe Velora";
+      const { error } = await supabase.from("reservations").update(patch as never).eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => {
-      toast.success("Réservation mise à jour.");
+    onSuccess: (_d, vars) => {
+      toast.success(
+        vars.status === "confirmed"
+          ? "Réservation confirmée. Le client voit le nouveau statut immédiatement."
+          : vars.status === "cancelled"
+            ? "Réservation annulée. Les dates sont de nouveau disponibles."
+            : "Réservation mise à jour.",
+      );
       queryClient.invalidateQueries({ queryKey: ["all-reservations"] });
     },
     onError: (e: Error) => toast.error(e.message),
   });
+
 
   const now = new Date();
   const rows = (data ?? []).filter((r) => {
