@@ -11,9 +11,9 @@ export function ReservationStatusTimeline({
   cancellationReason,
 }: {
   status: ReservationStatus;
-  confirmedAt?: string | null;
-  cancelledAt?: string | null;
-  cancellationReason?: string | null;
+  confirmedAt?: string | null | undefined;
+  cancelledAt?: string | null | undefined;
+  cancellationReason?: string | null | undefined;
 }) {
   if (status === "cancelled") {
     return (
