@@ -228,3 +228,80 @@ function AdminReservations() {
     </div>
   );
 }
+
+function ConfirmAction({
+  label,
+  title,
+  description,
+  actionLabel,
+  variant = "accent",
+  disabled,
+  onConfirm,
+}: {
+  label: string;
+  title: string;
+  description: string;
+  actionLabel: string;
+  variant?: "accent" | "outline" | "ghost";
+  disabled?: boolean;
+  onConfirm: () => void;
+}) {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button size="sm" variant={variant} disabled={disabled}>{label}</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogDescription>{description}</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Retour</AlertDialogCancel>
+          <AlertDialogAction onClick={onConfirm}>{actionLabel}</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
+function CancelAction({
+  reservation,
+  disabled,
+  onConfirm,
+}: {
+  reservation: Reservation;
+  disabled?: boolean;
+  onConfirm: (reason: string) => void;
+}) {
+  const [reason, setReason] = useState("");
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button size="sm" variant="ghost" disabled={disabled}>Annuler</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Annuler la réservation {reservation.reference} ?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Le véhicule redeviendra disponible sur ces dates et le client verra l'annulation ainsi que son motif dans son
+            espace.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <div className="space-y-1.5">
+          <Label className="text-xs uppercase text-muted-foreground">Motif communiqué au client</Label>
+          <Textarea
+            rows={3}
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            placeholder="Véhicule indisponible, demande du client, dossier incomplet…"
+          />
+        </div>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Retour</AlertDialogCancel>
+          <AlertDialogAction onClick={() => onConfirm(reason)}>Confirmer l'annulation</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
