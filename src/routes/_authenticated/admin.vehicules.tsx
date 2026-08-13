@@ -64,8 +64,8 @@ function AdminVehicles() {
         images: String(form['images'] ?? "").split(",").map((s) => s.trim()).filter(Boolean),
       };
       const { error } = editing
-        ? await supabase.from("vehicles").update(payload).eq("id", editing)
-        : await supabase.from("vehicles").insert(payload);
+        ? await supabase.from("vehicles").update(payload as never).eq("id", editing)
+        : await supabase.from("vehicles").insert(payload as never);
       if (error) throw error;
     },
     onSuccess: () => {

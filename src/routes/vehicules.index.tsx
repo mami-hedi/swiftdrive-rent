@@ -19,7 +19,7 @@ interface VehicleSearch {
   pickup?: string | undefined;
 }
 
-export const Route = createFileRoute("/vehicules")({
+export const Route = createFileRoute("/vehicules/")({
   validateSearch: (search: Record<string, unknown>): VehicleSearch => ({
     start: typeof search['start'] === "string" ? search['start'] : undefined,
     end: typeof search['end'] === "string" ? search['end'] : undefined,
