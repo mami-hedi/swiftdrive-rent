@@ -179,6 +179,10 @@ export type Database = {
       reservations: {
         Row: {
           address: string | null
+          cancellation_reason: string | null
+          cancelled_at: string | null
+          cancelled_by: string | null
+          confirmed_at: string | null
           created_at: string
           daily_rate: number
           days: number
@@ -203,6 +207,10 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
+          confirmed_at?: string | null
           created_at?: string
           daily_rate: number
           days: number
@@ -227,6 +235,10 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
+          confirmed_at?: string | null
           created_at?: string
           daily_rate?: number
           days?: number
