@@ -102,9 +102,9 @@ const VehiculesIndexRoute = VehiculesIndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const VehiculesIdRoute = VehiculesIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => VehiculesRoute,
+  id: '/vehicules/$id',
+  path: '/vehicules/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
@@ -302,6 +302,7 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   ConfirmationReferenceRoute: typeof ConfirmationReferenceRoute
   ReserverIdRoute: typeof ReserverIdRoute
+  VehiculesIdRoute: typeof VehiculesIdRoute
   VehiculesIndexRoute: typeof VehiculesIndexRoute
 }
 
@@ -407,10 +408,10 @@ declare module '@tanstack/react-router' {
     }
     '/vehicules/$id': {
       id: '/vehicules/$id'
-      path: '/$id'
+      path: '/vehicules/$id'
       fullPath: '/vehicules/$id'
       preLoaderRoute: typeof VehiculesIdRouteImport
-      parentRoute: typeof VehiculesRoute
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/': {
       id: '/_authenticated/admin/'
@@ -512,6 +513,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   ConfirmationReferenceRoute: ConfirmationReferenceRoute,
   ReserverIdRoute: ReserverIdRoute,
+  VehiculesIdRoute: VehiculesIdRoute,
   VehiculesIndexRoute: VehiculesIndexRoute,
 }
 export const routeTree = rootRouteImport
