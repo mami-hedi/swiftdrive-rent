@@ -105,9 +105,14 @@ function AdminReservations() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold md:text-3xl">Réservations</h1>
-        <p className="mt-2 text-sm text-muted-foreground">{rows.length} réservation(s)</p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-semibold md:text-3xl">Réservations</h1>
+          <p className="mt-2 text-sm text-muted-foreground">{rows.length} réservation(s)</p>
+        </div>
+        <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5 text-xs text-muted-foreground">
+          <Radio className="size-3.5 animate-pulse text-accent" /> Mises à jour en temps réel
+        </span>
       </div>
 
       <div className="flex flex-wrap gap-2">
