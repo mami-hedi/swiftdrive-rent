@@ -18,11 +18,11 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as TermsRouteImport } from './routes/terms'
-import { Route as VehiculesRouteImport } from './routes/vehicules'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedCompteRouteImport } from './routes/_authenticated/compte'
 import { Route as ConfirmationReferenceRouteImport } from './routes/confirmation.$reference'
 import { Route as ReserverIdRouteImport } from './routes/reserver.$id'
+import { Route as VehiculesIndexRouteImport } from './routes/vehicules.index'
 import { Route as VehiculesIdRouteImport } from './routes/vehicules.$id'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminCalendrierRouteImport } from './routes/_authenticated/admin.calendrier'
@@ -76,11 +76,6 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
-const VehiculesRoute = VehiculesRouteImport.update({
-  id: '/vehicules',
-  path: '/vehicules',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -101,10 +96,15 @@ const ReserverIdRoute = ReserverIdRouteImport.update({
   path: '/reserver/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VehiculesIndexRoute = VehiculesIndexRouteImport.update({
+  id: '/vehicules/',
+  path: '/vehicules/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VehiculesIdRoute = VehiculesIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => VehiculesRoute,
+  id: '/vehicules/$id',
+  path: '/vehicules/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
@@ -157,12 +157,12 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
-  '/vehicules': typeof VehiculesRouteWithChildren
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/compte': typeof AuthenticatedCompteRoute
   '/confirmation/$reference': typeof ConfirmationReferenceRoute
   '/reserver/$id': typeof ReserverIdRoute
   '/vehicules/$id': typeof VehiculesIdRoute
+  '/vehicules/': typeof VehiculesIndexRoute
   '/admin/calendrier': typeof AuthenticatedAdminCalendrierRoute
   '/admin/clients': typeof AuthenticatedAdminClientsRoute
   '/admin/options': typeof AuthenticatedAdminOptionsRoute
@@ -180,11 +180,11 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
-  '/vehicules': typeof VehiculesRouteWithChildren
   '/compte': typeof AuthenticatedCompteRoute
   '/confirmation/$reference': typeof ConfirmationReferenceRoute
   '/reserver/$id': typeof ReserverIdRoute
   '/vehicules/$id': typeof VehiculesIdRoute
+  '/vehicules': typeof VehiculesIndexRoute
   '/admin/calendrier': typeof AuthenticatedAdminCalendrierRoute
   '/admin/clients': typeof AuthenticatedAdminClientsRoute
   '/admin/options': typeof AuthenticatedAdminOptionsRoute
@@ -204,12 +204,12 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
-  '/vehicules': typeof VehiculesRouteWithChildren
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/compte': typeof AuthenticatedCompteRoute
   '/confirmation/$reference': typeof ConfirmationReferenceRoute
   '/reserver/$id': typeof ReserverIdRoute
   '/vehicules/$id': typeof VehiculesIdRoute
+  '/vehicules/': typeof VehiculesIndexRoute
   '/_authenticated/admin/calendrier': typeof AuthenticatedAdminCalendrierRoute
   '/_authenticated/admin/clients': typeof AuthenticatedAdminClientsRoute
   '/_authenticated/admin/options': typeof AuthenticatedAdminOptionsRoute
@@ -229,12 +229,12 @@ export interface FileRouteTypes {
     | '/faq'
     | '/privacy'
     | '/terms'
-    | '/vehicules'
     | '/admin'
     | '/compte'
     | '/confirmation/$reference'
     | '/reserver/$id'
     | '/vehicules/$id'
+    | '/vehicules/'
     | '/admin/calendrier'
     | '/admin/clients'
     | '/admin/options'
@@ -252,11 +252,11 @@ export interface FileRouteTypes {
     | '/faq'
     | '/privacy'
     | '/terms'
-    | '/vehicules'
     | '/compte'
     | '/confirmation/$reference'
     | '/reserver/$id'
     | '/vehicules/$id'
+    | '/vehicules'
     | '/admin/calendrier'
     | '/admin/clients'
     | '/admin/options'
@@ -275,12 +275,12 @@ export interface FileRouteTypes {
     | '/faq'
     | '/privacy'
     | '/terms'
-    | '/vehicules'
     | '/_authenticated/admin'
     | '/_authenticated/compte'
     | '/confirmation/$reference'
     | '/reserver/$id'
     | '/vehicules/$id'
+    | '/vehicules/'
     | '/_authenticated/admin/calendrier'
     | '/_authenticated/admin/clients'
     | '/_authenticated/admin/options'
@@ -300,9 +300,10 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
-  VehiculesRoute: typeof VehiculesRouteWithChildren
   ConfirmationReferenceRoute: typeof ConfirmationReferenceRoute
   ReserverIdRoute: typeof ReserverIdRoute
+  VehiculesIdRoute: typeof VehiculesIdRoute
+  VehiculesIndexRoute: typeof VehiculesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -370,13 +371,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/vehicules': {
-      id: '/vehicules'
-      path: '/vehicules'
-      fullPath: '/vehicules'
-      preLoaderRoute: typeof VehiculesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
       path: '/admin'
@@ -405,12 +399,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReserverIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/vehicules/': {
+      id: '/vehicules/'
+      path: '/vehicules'
+      fullPath: '/vehicules/'
+      preLoaderRoute: typeof VehiculesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/vehicules/$id': {
       id: '/vehicules/$id'
-      path: '/$id'
+      path: '/vehicules/$id'
       fullPath: '/vehicules/$id'
       preLoaderRoute: typeof VehiculesIdRouteImport
-      parentRoute: typeof VehiculesRoute
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/': {
       id: '/_authenticated/admin/'
@@ -500,18 +501,6 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
-interface VehiculesRouteChildren {
-  VehiculesIdRoute: typeof VehiculesIdRoute
-}
-
-const VehiculesRouteChildren: VehiculesRouteChildren = {
-  VehiculesIdRoute: VehiculesIdRoute,
-}
-
-const VehiculesRouteWithChildren = VehiculesRoute._addFileChildren(
-  VehiculesRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -522,9 +511,10 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
-  VehiculesRoute: VehiculesRouteWithChildren,
   ConfirmationReferenceRoute: ConfirmationReferenceRoute,
   ReserverIdRoute: ReserverIdRoute,
+  VehiculesIdRoute: VehiculesIdRoute,
+  VehiculesIndexRoute: VehiculesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
