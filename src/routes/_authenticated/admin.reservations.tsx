@@ -162,31 +162,49 @@ function AdminReservations() {
                   <Badge variant={r.status === "confirmed" ? "success" : r.status === "cancelled" ? "destructive" : "warning"}>
                     {STATUS_LABELS[r.status]}
                   </Badge>
+                  {r.status === "confirmed" && r.confirmed_at && (
+                    <span className="mt-1 block text-[11px] text-muted-foreground">le {formatDateTime(r.confirmed_at)}</span>
+                  )}
+                  {r.status === "cancelled" && (
+                    <span className="mt-1 block text-[11px] text-muted-foreground">
+                      {r.cancelled_at ? `le ${formatDateTime(r.cancelled_at)}` : null}
+                      {r.cancellation_reason ? ` · ${r.cancellation_reason}` : null}
+                    </span>
+                  )}
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex flex-wrap gap-1">
                     {r.status === "pending" && (
-                      <Button size="sm" variant="accent" onClick={() => update.mutate({ id: r.id, status: "confirmed" })}>
-                        Confirmer
-                      </Button>
+                      <ConfirmAction
+                        label="Confirmer"
+                        variant="accent"
+                        title={`Confirmer la réservation ${r.reference} ?`}
+                        description={`${r.first_name} ${r.last_name} · ${formatDate(r.start_at)} → ${formatDate(r.end_at)}. Le statut sera visible immédiatement dans l'espace client.`}
+                        actionLabel="Confirmer la réservation"
+                        disabled={update.isPending}
+                        onConfirm={() => update.mutate({ id: r.id, status: "confirmed" })}
+                      />
                     )}
                     {r.status === "confirmed" && (
-                      <Button size="sm" variant="outline" onClick={() => update.mutate({ id: r.id, status: "ongoing" })}>
+                      <Button size="sm" variant="outline" disabled={update.isPending} onClick={() => update.mutate({ id: r.id, status: "ongoing" })}>
                         Démarrer
                       </Button>
                     )}
                     {r.status === "ongoing" && (
-                      <Button size="sm" variant="outline" onClick={() => update.mutate({ id: r.id, status: "completed" })}>
+                      <Button size="sm" variant="outline" disabled={update.isPending} onClick={() => update.mutate({ id: r.id, status: "completed" })}>
                         Terminer
                       </Button>
                     )}
                     {r.status !== "cancelled" && r.status !== "completed" && (
-                      <Button size="sm" variant="ghost" onClick={() => update.mutate({ id: r.id, status: "cancelled" })}>
-                        Annuler
-                      </Button>
+                      <CancelAction
+                        reservation={r}
+                        disabled={update.isPending}
+                        onConfirm={(reason) => update.mutate({ id: r.id, status: "cancelled", reason })}
+                      />
                     )}
                   </div>
                 </td>
+
               </tr>
             ))}
             {paged.length === 0 && (
