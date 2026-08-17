@@ -236,7 +236,7 @@ function ReservationCard({ r, onCancel }: { r: Reservation; onCancel: () => void
           </Link>
         </Button>
         {(r.status === "confirmed" || r.status === "cancelled" || r.status === "completed") && (
-          <Button variant="accent" size="sm" onClick={() => downloadReservationReceipt(r)}>
+          <Button variant="accent" size="sm" onClick={() => downloadReservationReceipt(r, settings ?? {})}>
             <Download className="size-4" /> Reçu PDF
           </Button>
         )}
