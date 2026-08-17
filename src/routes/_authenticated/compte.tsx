@@ -209,6 +209,9 @@ function ReservationCard({ r, onCancel }: { r: Reservation; onCancel: () => void
             {STATUS_LABELS[r.status]}
           </Badge>
           <span className="text-xs text-muted-foreground">{r.reference}</span>
+          {r.receipt_number && (
+            <span className="text-xs text-muted-foreground">· Reçu {r.receipt_number}</span>
+          )}
         </div>
         <p className="mt-2 text-sm text-muted-foreground">
           {formatDateTime(r.start_at)} → {formatDateTime(r.end_at)} · {r.days} jour(s)
