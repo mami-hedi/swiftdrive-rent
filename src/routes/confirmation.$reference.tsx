@@ -134,3 +134,12 @@ function Item({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
+
+function Line({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between">
+      <dt className="text-muted-foreground">{label}</dt>
+      <dd className="font-medium">{value}</dd>
+    </div>
+  );
+}
