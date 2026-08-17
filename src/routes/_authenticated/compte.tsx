@@ -189,6 +189,7 @@ function Stat({ icon: Icon, label, value }: { icon: typeof Layers; label: string
 
 function ReservationCard({ r, onCancel }: { r: Reservation; onCancel: () => void }) {
   const canCancel = r.status === "pending" || r.status === "confirmed";
+  const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: fetchSettings, staleTime: 300_000 });
   return (
     <article className="flex flex-col gap-5 rounded-2xl border border-border bg-card p-5 shadow-soft sm:flex-row">
       <img
