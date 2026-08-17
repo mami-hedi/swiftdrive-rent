@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { fetchMyReservations } from "@/services/api";
+import { fetchMyReservations, fetchSettings } from "@/services/api";
 import { useRealtimeReservations } from "@/hooks/useRealtimeReservations";
 import { ReservationStatusTimeline } from "@/components/site/ReservationStatusTimeline";
 import { STATUS_LABELS, eur, formatDateTime, type Reservation } from "@/lib/domain";
@@ -189,6 +189,7 @@ function Stat({ icon: Icon, label, value }: { icon: typeof Layers; label: string
 
 function ReservationCard({ r, onCancel }: { r: Reservation; onCancel: () => void }) {
   const canCancel = r.status === "pending" || r.status === "confirmed";
+  const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: fetchSettings, staleTime: 300_000 });
   return (
     <article className="flex flex-col gap-5 rounded-2xl border border-border bg-card p-5 shadow-soft sm:flex-row">
       <img
@@ -208,6 +209,9 @@ function ReservationCard({ r, onCancel }: { r: Reservation; onCancel: () => void
             {STATUS_LABELS[r.status]}
           </Badge>
           <span className="text-xs text-muted-foreground">{r.reference}</span>
+          {r.receipt_number && (
+            <span className="text-xs text-muted-foreground">· Reçu {r.receipt_number}</span>
+          )}
         </div>
         <p className="mt-2 text-sm text-muted-foreground">
           {formatDateTime(r.start_at)} → {formatDateTime(r.end_at)} · {r.days} jour(s)
@@ -232,7 +236,7 @@ function ReservationCard({ r, onCancel }: { r: Reservation; onCancel: () => void
           </Link>
         </Button>
         {(r.status === "confirmed" || r.status === "cancelled" || r.status === "completed") && (
-          <Button variant="accent" size="sm" onClick={() => downloadReservationReceipt(r)}>
+          <Button variant="accent" size="sm" onClick={() => downloadReservationReceipt(r, settings ?? {})}>
             <Download className="size-4" /> Reçu PDF
           </Button>
         )}

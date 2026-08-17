@@ -197,6 +197,7 @@ export type Database = {
           options_total: number
           phone: string
           pickup_location: string
+          receipt_number: string
           reference: string
           start_at: string
           status: Database["public"]["Enums"]["reservation_status"]
@@ -225,6 +226,7 @@ export type Database = {
           options_total?: number
           phone: string
           pickup_location: string
+          receipt_number?: string
           reference?: string
           start_at: string
           status?: Database["public"]["Enums"]["reservation_status"]
@@ -253,6 +255,7 @@ export type Database = {
           options_total?: number
           phone?: string
           pickup_location?: string
+          receipt_number?: string
           reference?: string
           start_at?: string
           status?: Database["public"]["Enums"]["reservation_status"]
@@ -472,6 +475,7 @@ export type Database = {
         Returns: boolean
       }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
+      next_receipt_number: { Args: never; Returns: string }
       vehicle_busy_ranges: {
         Args: { _vehicle_id: string }
         Returns: {

@@ -41,6 +41,7 @@ export interface LocationRow {
 export interface Reservation {
   id: string;
   reference: string;
+  receipt_number?: string | null;
   user_id: string | null;
   vehicle_id: string;
   first_name: string;

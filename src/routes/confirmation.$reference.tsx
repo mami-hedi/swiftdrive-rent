@@ -7,7 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { STATUS_LABELS, eur, formatDateTime, type Reservation } from "@/lib/domain";
-import { downloadReservationReceipt } from "@/lib/receipt";
+import { downloadReservationReceipt, receiptBreakdown, receiptNumber } from "@/lib/receipt";
+import { fetchSettings } from "@/services/api";
 
 
 export const Route = createFileRoute("/confirmation/$reference")({
@@ -37,10 +38,11 @@ function ConfirmationPage() {
       return data as unknown as Reservation | null;
     },
   });
+  const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: fetchSettings, staleTime: 300_000 });
 
   function downloadSummary() {
     if (!data) return;
-    downloadReservationReceipt(data);
+    downloadReservationReceipt(data, settings ?? {});
   }
 
 
@@ -69,10 +71,10 @@ function ConfirmationPage() {
 
             <dl className="mt-10 grid gap-4 sm:grid-cols-2">
               <Item label="Numéro de réservation" value={data.reference} />
+              <Item label="Numéro de reçu" value={receiptNumber(data)} />
               <Item label="Véhicule" value={`${data.vehicles?.brand} ${data.vehicles?.model}`} />
               <Item label="Départ" value={`${formatDateTime(data.start_at)} · ${data.pickup_location}`} />
               <Item label="Retour" value={`${formatDateTime(data.end_at)} · ${data.dropoff_location}`} />
-              <Item label="Montant total" value={eur(Number(data.total))} />
               <div>
                 <dt className="text-xs uppercase tracking-wide text-muted-foreground">Statut</dt>
                 <dd className="mt-1">
@@ -82,6 +84,32 @@ function ConfirmationPage() {
                 </dd>
               </div>
             </dl>
+
+            {(() => {
+              const b = receiptBreakdown(data, settings?.vat_rate ?? 20);
+              return (
+                <div className="mt-8 rounded-2xl border border-border p-6">
+                  <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                    Récapitulatif de paiement
+                  </h2>
+                  <dl className="mt-4 space-y-2 text-sm">
+                    <Line label={`Location (${data.days} j × ${eur(Number(data.daily_rate))})`} value={eur(b.vehicleTtc)} />
+                    <Line label="Options et suppléments" value={eur(b.optionsTtc)} />
+                    <Line label="Total HT" value={eur(b.subtotalHt)} />
+                    <Line label={`TVA (${b.rate}%)`} value={eur(b.vatAmount)} />
+                    <div className="flex items-center justify-between border-t border-border pt-3 text-base font-semibold">
+                      <span>Total TTC</span>
+                      <span>{eur(b.total)}</span>
+                    </div>
+                    <Line label="Montant réglé" value={eur(b.paid)} />
+                    <Line
+                      label={data.status === "cancelled" ? "Montant annulé" : "Solde restant dû"}
+                      value={eur(data.status === "cancelled" ? b.total : b.balance)}
+                    />
+                  </dl>
+                </div>
+              );
+            })()}
 
             <div className="mt-10 flex flex-wrap gap-3">
               <Button asChild variant="accent">
@@ -103,6 +131,15 @@ function Item({ label, value }: { label: string; value: string }) {
     <div>
       <dt className="text-xs uppercase tracking-wide text-muted-foreground">{label}</dt>
       <dd className="mt-1 font-medium">{value}</dd>
+    </div>
+  );
+}
+
+function Line({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between">
+      <dt className="text-muted-foreground">{label}</dt>
+      <dd className="font-medium">{value}</dd>
     </div>
   );
 }
