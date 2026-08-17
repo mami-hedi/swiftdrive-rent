@@ -149,15 +149,43 @@ function AdminReservations() {
         ))}
       </div>
 
-      <Input
-        placeholder="Rechercher par référence, client ou véhicule…"
-        value={search}
-        onChange={(e) => {
-          setSearch(e.target.value);
-          setPage(1);
-        }}
-        className="max-w-md"
-      />
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <Input
+          placeholder="Rechercher par référence, client ou véhicule…"
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setPage(1);
+          }}
+        />
+        <div className="grid grid-cols-2 gap-2">
+          <div className="space-y-1">
+            <Label className="text-[11px] uppercase text-muted-foreground">Du</Label>
+            <Input type="date" value={from} onChange={(e) => { setFrom(e.target.value); setPage(1); }} />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-[11px] uppercase text-muted-foreground">Au</Label>
+            <Input type="date" value={to} onChange={(e) => { setTo(e.target.value); setPage(1); }} />
+          </div>
+        </div>
+        <select
+          value={vehicle}
+          onChange={(e) => { setVehicle(e.target.value); setPage(1); }}
+          className="h-10 rounded-md border border-border bg-background px-3 text-sm"
+        >
+          <option value="all">Tous les véhicules</option>
+          {vehicleOptions.map(([id, label]) => (
+            <option key={id} value={id}>{label}</option>
+          ))}
+        </select>
+        <Button
+          variant="outline"
+          onClick={() => { setFilter("all"); setSearch(""); setFrom(""); setTo(""); setVehicle("all"); setPage(1); }}
+        >
+          Réinitialiser les filtres
+        </Button>
+      </div>
+
 
       <div className="overflow-x-auto rounded-2xl border border-border bg-card">
         <table className="w-full min-w-[900px] text-sm">
