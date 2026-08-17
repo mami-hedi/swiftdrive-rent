@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { STATUS_LABELS, eur, formatDateTime, type Reservation } from "@/lib/domain";
+import { downloadReservationReceipt } from "@/lib/receipt";
+
 
 export const Route = createFileRoute("/confirmation/$reference")({
   head: () => ({
