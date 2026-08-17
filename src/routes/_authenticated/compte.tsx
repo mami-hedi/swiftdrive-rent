@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { fetchMyReservations } from "@/services/api";
+import { fetchMyReservations, fetchSettings } from "@/services/api";
 import { useRealtimeReservations } from "@/hooks/useRealtimeReservations";
 import { ReservationStatusTimeline } from "@/components/site/ReservationStatusTimeline";
 import { STATUS_LABELS, eur, formatDateTime, type Reservation } from "@/lib/domain";
