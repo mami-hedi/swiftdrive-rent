@@ -27,6 +27,8 @@ import { fetchMyReservations } from "@/services/api";
 import { useRealtimeReservations } from "@/hooks/useRealtimeReservations";
 import { ReservationStatusTimeline } from "@/components/site/ReservationStatusTimeline";
 import { STATUS_LABELS, eur, formatDateTime, type Reservation } from "@/lib/domain";
+import { downloadReservationReceipt } from "@/lib/receipt";
+
 
 export const Route = createFileRoute("/_authenticated/compte")({
   head: () => ({
