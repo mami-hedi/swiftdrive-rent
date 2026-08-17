@@ -89,6 +89,11 @@ function AdminReservations() {
     if (["pending", "confirmed", "cancelled", "completed"].includes(filter)) return r.status === filter;
     return true;
   }).filter((r) => {
+    if (from && new Date(r.end_at) < new Date(`${from}T00:00:00`)) return false;
+    if (to && new Date(r.start_at) > new Date(`${to}T23:59:59`)) return false;
+    return true;
+  }).filter((r) => (vehicle === "all" ? true : r.vehicle_id === vehicle))
+    .filter((r) => {
     const q = search.toLowerCase();
     return (
       !q ||
@@ -97,6 +102,15 @@ function AdminReservations() {
       `${r.vehicles?.brand} ${r.vehicles?.model}`.toLowerCase().includes(q)
     );
   });
+
+  const vehicleOptions = Array.from(
+    new Map(
+      (data ?? [])
+        .filter((r) => r.vehicles)
+        .map((r) => [r.vehicle_id, `${r.vehicles?.brand} ${r.vehicles?.model}`] as const),
+    ).entries(),
+  );
+
 
   const pages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
   const paged = rows.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
