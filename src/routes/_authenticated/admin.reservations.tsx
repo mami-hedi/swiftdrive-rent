@@ -47,7 +47,11 @@ function AdminReservations() {
   const { data, isLoading } = useQuery({ queryKey: ["all-reservations"], queryFn: fetchAllReservations });
   const [filter, setFilter] = useState<string>("all");
   const [search, setSearch] = useState("");
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+  const [vehicle, setVehicle] = useState("all");
   const [page, setPage] = useState(1);
+
 
   useRealtimeReservations();
 
@@ -89,6 +93,11 @@ function AdminReservations() {
     if (["pending", "confirmed", "cancelled", "completed"].includes(filter)) return r.status === filter;
     return true;
   }).filter((r) => {
+    if (from && new Date(r.end_at) < new Date(`${from}T00:00:00`)) return false;
+    if (to && new Date(r.start_at) > new Date(`${to}T23:59:59`)) return false;
+    return true;
+  }).filter((r) => (vehicle === "all" ? true : r.vehicle_id === vehicle))
+    .filter((r) => {
     const q = search.toLowerCase();
     return (
       !q ||
@@ -97,6 +106,15 @@ function AdminReservations() {
       `${r.vehicles?.brand} ${r.vehicles?.model}`.toLowerCase().includes(q)
     );
   });
+
+  const vehicleOptions = Array.from(
+    new Map(
+      (data ?? [])
+        .filter((r) => r.vehicles)
+        .map((r) => [r.vehicle_id, `${r.vehicles?.brand} ${r.vehicles?.model}`] as const),
+    ).entries(),
+  );
+
 
   const pages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
   const paged = rows.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
@@ -131,15 +149,43 @@ function AdminReservations() {
         ))}
       </div>
 
-      <Input
-        placeholder="Rechercher par référence, client ou véhicule…"
-        value={search}
-        onChange={(e) => {
-          setSearch(e.target.value);
-          setPage(1);
-        }}
-        className="max-w-md"
-      />
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <Input
+          placeholder="Rechercher par référence, client ou véhicule…"
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setPage(1);
+          }}
+        />
+        <div className="grid grid-cols-2 gap-2">
+          <div className="space-y-1">
+            <Label className="text-[11px] uppercase text-muted-foreground">Du</Label>
+            <Input type="date" value={from} onChange={(e) => { setFrom(e.target.value); setPage(1); }} />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-[11px] uppercase text-muted-foreground">Au</Label>
+            <Input type="date" value={to} onChange={(e) => { setTo(e.target.value); setPage(1); }} />
+          </div>
+        </div>
+        <select
+          value={vehicle}
+          onChange={(e) => { setVehicle(e.target.value); setPage(1); }}
+          className="h-10 rounded-md border border-border bg-background px-3 text-sm"
+        >
+          <option value="all">Tous les véhicules</option>
+          {vehicleOptions.map(([id, label]) => (
+            <option key={id} value={id}>{label}</option>
+          ))}
+        </select>
+        <Button
+          variant="outline"
+          onClick={() => { setFilter("all"); setSearch(""); setFrom(""); setTo(""); setVehicle("all"); setPage(1); }}
+        >
+          Réinitialiser les filtres
+        </Button>
+      </div>
+
 
       <div className="overflow-x-auto rounded-2xl border border-border bg-card">
         <table className="w-full min-w-[900px] text-sm">

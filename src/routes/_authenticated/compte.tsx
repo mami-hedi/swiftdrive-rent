@@ -27,6 +27,8 @@ import { fetchMyReservations } from "@/services/api";
 import { useRealtimeReservations } from "@/hooks/useRealtimeReservations";
 import { ReservationStatusTimeline } from "@/components/site/ReservationStatusTimeline";
 import { STATUS_LABELS, eur, formatDateTime, type Reservation } from "@/lib/domain";
+import { downloadReservationReceipt } from "@/lib/receipt";
+
 
 export const Route = createFileRoute("/_authenticated/compte")({
   head: () => ({
@@ -229,6 +231,12 @@ function ReservationCard({ r, onCancel }: { r: Reservation; onCancel: () => void
             <Download className="size-4" /> Récapitulatif
           </Link>
         </Button>
+        {(r.status === "confirmed" || r.status === "cancelled" || r.status === "completed") && (
+          <Button variant="accent" size="sm" onClick={() => downloadReservationReceipt(r)}>
+            <Download className="size-4" /> Reçu PDF
+          </Button>
+        )}
+
         {canCancel && (
           <AlertDialog>
             <AlertDialogTrigger asChild>

@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { STATUS_LABELS, eur, formatDateTime, type Reservation } from "@/lib/domain";
+import { downloadReservationReceipt } from "@/lib/receipt";
+
 
 export const Route = createFileRoute("/confirmation/$reference")({
   head: () => ({
@@ -38,22 +40,9 @@ function ConfirmationPage() {
 
   function downloadSummary() {
     if (!data) return;
-    const lines = [
-      `Récapitulatif de réservation ${data.reference}`,
-      `Véhicule : ${data.vehicles?.brand} ${data.vehicles?.model}`,
-      `Départ : ${formatDateTime(data.start_at)} — ${data.pickup_location}`,
-      `Retour : ${formatDateTime(data.end_at)} — ${data.dropoff_location}`,
-      `Durée : ${data.days} jour(s)`,
-      `Total : ${eur(Number(data.total))}`,
-      `Statut : ${STATUS_LABELS[data.status]}`,
-    ].join("\n");
-    const url = URL.createObjectURL(new Blob([lines], { type: "text/plain" }));
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${data.reference}.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
+    downloadReservationReceipt(data);
   }
+
 
   return (
     <SiteLayout>
