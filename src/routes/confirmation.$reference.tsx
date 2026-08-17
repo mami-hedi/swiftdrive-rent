@@ -37,10 +37,11 @@ function ConfirmationPage() {
       return data as unknown as Reservation | null;
     },
   });
+  const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: fetchSettings, staleTime: 300_000 });
 
   function downloadSummary() {
     if (!data) return;
-    downloadReservationReceipt(data);
+    downloadReservationReceipt(data, settings ?? {});
   }
 
 
