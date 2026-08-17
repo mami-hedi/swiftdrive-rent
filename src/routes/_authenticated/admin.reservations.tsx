@@ -47,7 +47,11 @@ function AdminReservations() {
   const { data, isLoading } = useQuery({ queryKey: ["all-reservations"], queryFn: fetchAllReservations });
   const [filter, setFilter] = useState<string>("all");
   const [search, setSearch] = useState("");
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+  const [vehicle, setVehicle] = useState("all");
   const [page, setPage] = useState(1);
+
 
   useRealtimeReservations();
 
