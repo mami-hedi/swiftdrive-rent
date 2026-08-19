@@ -1,5 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
-import type { LocationRow, RentalOption, Reservation, Vehicle } from "@/lib/domain";
+import type { AuditLog, LocationRow, RentalOption, Reservation, Vehicle } from "@/lib/domain";
 
 export async function fetchVehicles(): Promise<Vehicle[]> {
   const { data, error } = await supabase.from("vehicles").select("*").order("daily_price");
@@ -60,4 +60,14 @@ export async function fetchAllReservations(): Promise<Reservation[]> {
 export async function fetchSettings() {
   const { data } = await supabase.from("settings").select("*").eq("id", 1).maybeSingle();
   return data;
+}
+
+export async function fetchAuditLogs(limit = 300): Promise<AuditLog[]> {
+  const { data, error } = await supabase
+    .from("audit_logs")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  if (error) throw error;
+  return (data ?? []) as unknown as AuditLog[];
 }

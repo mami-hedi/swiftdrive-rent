@@ -124,3 +124,30 @@ export function combineDateTime(date: string, time: string) {
 export function toDateInput(d: Date) {
   return d.toISOString().slice(0, 10);
 }
+
+export type AuditLog = {
+  id: string;
+  actor_id: string | null;
+  actor_email: string | null;
+  action: string;
+  entity_type: string;
+  entity_id: string | null;
+  entity_label: string | null;
+  old_value: string | null;
+  new_value: string | null;
+  reason: string | null;
+  metadata: Record<string, unknown> | null;
+  created_at: string;
+};
+
+export const AUDIT_ACTION_LABELS: Record<string, string> = {
+  "reservation.created": "Réservation créée",
+  "reservation.pending": "Réservation remise en attente",
+  "reservation.confirmed": "Réservation confirmée",
+  "reservation.ongoing": "Location démarrée",
+  "reservation.completed": "Location terminée",
+  "reservation.cancelled": "Réservation annulée",
+  "vehicle.created": "Véhicule ajouté",
+  "vehicle.updated": "Véhicule modifié",
+  "vehicle.deleted": "Véhicule supprimé",
+};
