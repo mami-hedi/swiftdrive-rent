@@ -3,6 +3,7 @@ import {
   CalendarDays,
   CarFront,
   ClipboardList,
+  History,
   LayoutDashboard,
   Settings,
   SlidersHorizontal,
