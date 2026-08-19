@@ -1,0 +1,12 @@
+REVOKE ALL ON FUNCTION public.handle_new_user() FROM PUBLIC, anon, authenticated;
+REVOKE ALL ON FUNCTION public.next_receipt_number() FROM PUBLIC, anon, authenticated;
+REVOKE ALL ON FUNCTION public.track_reservation_status() FROM PUBLIC, anon, authenticated;
+REVOKE ALL ON FUNCTION public.update_updated_at_column() FROM PUBLIC, anon, authenticated;
+REVOKE ALL ON FUNCTION public.has_role(uuid, public.app_role) FROM PUBLIC, anon, authenticated;
+REVOKE ALL ON FUNCTION public.is_staff(uuid) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.is_staff(uuid) TO authenticated;
+REVOKE ALL ON FUNCTION public.available_vehicle_ids(timestamptz, timestamptz) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.available_vehicle_ids(timestamptz, timestamptz) TO anon, authenticated;
+REVOKE ALL ON FUNCTION public.vehicle_busy_ranges(uuid) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.vehicle_busy_ranges(uuid) TO anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.handle_new_user(), public.next_receipt_number(), public.track_reservation_status(), public.update_updated_at_column(), public.has_role(uuid, public.app_role), public.is_staff(uuid), public.available_vehicle_ids(timestamptz, timestamptz), public.vehicle_busy_ranges(uuid) TO service_role;
