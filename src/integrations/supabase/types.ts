@@ -512,6 +512,14 @@ export type Database = {
           vehicle_id: string
         }[]
       }
+      create_public_reservation: {
+        Args: { _options?: Json; _payload: Json }
+        Returns: string
+      }
+      get_public_reservation: {
+        Args: { _email: string; _reference: string }
+        Returns: Json
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
