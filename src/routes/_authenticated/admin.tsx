@@ -22,6 +22,7 @@ const LINKS = [
   { to: "/admin/calendrier", label: "Calendrier", icon: CalendarDays, exact: false },
   { to: "/admin/clients", label: "Clients", icon: Users, exact: false },
   { to: "/admin/options", label: "Options", icon: SlidersHorizontal, exact: false },
+  { to: "/admin/journal", label: "Journal d’audit", icon: History, exact: false },
   { to: "/admin/parametres", label: "Paramètres", icon: Settings, exact: false },
 ] as const;
 

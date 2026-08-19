@@ -27,6 +27,7 @@ import { Route as VehiculesIdRouteImport } from './routes/vehicules.$id'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminCalendrierRouteImport } from './routes/_authenticated/admin.calendrier'
 import { Route as AuthenticatedAdminClientsRouteImport } from './routes/_authenticated/admin.clients'
+import { Route as AuthenticatedAdminJournalRouteImport } from './routes/_authenticated/admin.journal'
 import { Route as AuthenticatedAdminOptionsRouteImport } from './routes/_authenticated/admin.options'
 import { Route as AuthenticatedAdminParametresRouteImport } from './routes/_authenticated/admin.parametres'
 import { Route as AuthenticatedAdminReservationsRouteImport } from './routes/_authenticated/admin.reservations'
@@ -123,6 +124,12 @@ const AuthenticatedAdminClientsRoute =
     path: '/clients',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminJournalRoute =
+  AuthenticatedAdminJournalRouteImport.update({
+    id: '/journal',
+    path: '/journal',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminOptionsRoute =
   AuthenticatedAdminOptionsRouteImport.update({
     id: '/options',
@@ -165,6 +172,7 @@ export interface FileRoutesByFullPath {
   '/vehicules/': typeof VehiculesIndexRoute
   '/admin/calendrier': typeof AuthenticatedAdminCalendrierRoute
   '/admin/clients': typeof AuthenticatedAdminClientsRoute
+  '/admin/journal': typeof AuthenticatedAdminJournalRoute
   '/admin/options': typeof AuthenticatedAdminOptionsRoute
   '/admin/parametres': typeof AuthenticatedAdminParametresRoute
   '/admin/reservations': typeof AuthenticatedAdminReservationsRoute
@@ -187,6 +195,7 @@ export interface FileRoutesByTo {
   '/vehicules': typeof VehiculesIndexRoute
   '/admin/calendrier': typeof AuthenticatedAdminCalendrierRoute
   '/admin/clients': typeof AuthenticatedAdminClientsRoute
+  '/admin/journal': typeof AuthenticatedAdminJournalRoute
   '/admin/options': typeof AuthenticatedAdminOptionsRoute
   '/admin/parametres': typeof AuthenticatedAdminParametresRoute
   '/admin/reservations': typeof AuthenticatedAdminReservationsRoute
@@ -212,6 +221,7 @@ export interface FileRoutesById {
   '/vehicules/': typeof VehiculesIndexRoute
   '/_authenticated/admin/calendrier': typeof AuthenticatedAdminCalendrierRoute
   '/_authenticated/admin/clients': typeof AuthenticatedAdminClientsRoute
+  '/_authenticated/admin/journal': typeof AuthenticatedAdminJournalRoute
   '/_authenticated/admin/options': typeof AuthenticatedAdminOptionsRoute
   '/_authenticated/admin/parametres': typeof AuthenticatedAdminParametresRoute
   '/_authenticated/admin/reservations': typeof AuthenticatedAdminReservationsRoute
@@ -237,6 +247,7 @@ export interface FileRouteTypes {
     | '/vehicules/'
     | '/admin/calendrier'
     | '/admin/clients'
+    | '/admin/journal'
     | '/admin/options'
     | '/admin/parametres'
     | '/admin/reservations'
@@ -259,6 +270,7 @@ export interface FileRouteTypes {
     | '/vehicules'
     | '/admin/calendrier'
     | '/admin/clients'
+    | '/admin/journal'
     | '/admin/options'
     | '/admin/parametres'
     | '/admin/reservations'
@@ -283,6 +295,7 @@ export interface FileRouteTypes {
     | '/vehicules/'
     | '/_authenticated/admin/calendrier'
     | '/_authenticated/admin/clients'
+    | '/_authenticated/admin/journal'
     | '/_authenticated/admin/options'
     | '/_authenticated/admin/parametres'
     | '/_authenticated/admin/reservations'
@@ -434,6 +447,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminClientsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/journal': {
+      id: '/_authenticated/admin/journal'
+      path: '/journal'
+      fullPath: '/admin/journal'
+      preLoaderRoute: typeof AuthenticatedAdminJournalRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/options': {
       id: '/_authenticated/admin/options'
       path: '/options'
@@ -468,6 +488,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminCalendrierRoute: typeof AuthenticatedAdminCalendrierRoute
   AuthenticatedAdminClientsRoute: typeof AuthenticatedAdminClientsRoute
+  AuthenticatedAdminJournalRoute: typeof AuthenticatedAdminJournalRoute
   AuthenticatedAdminOptionsRoute: typeof AuthenticatedAdminOptionsRoute
   AuthenticatedAdminParametresRoute: typeof AuthenticatedAdminParametresRoute
   AuthenticatedAdminReservationsRoute: typeof AuthenticatedAdminReservationsRoute
@@ -478,6 +499,7 @@ interface AuthenticatedAdminRouteChildren {
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminCalendrierRoute: AuthenticatedAdminCalendrierRoute,
   AuthenticatedAdminClientsRoute: AuthenticatedAdminClientsRoute,
+  AuthenticatedAdminJournalRoute: AuthenticatedAdminJournalRoute,
   AuthenticatedAdminOptionsRoute: AuthenticatedAdminOptionsRoute,
   AuthenticatedAdminParametresRoute: AuthenticatedAdminParametresRoute,
   AuthenticatedAdminReservationsRoute: AuthenticatedAdminReservationsRoute,
