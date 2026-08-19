@@ -1,5 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
-import type { LocationRow, RentalOption, Reservation, Vehicle } from "@/lib/domain";
+import type { AuditLog, LocationRow, RentalOption, Reservation, Vehicle } from "@/lib/domain";
 
 export async function fetchVehicles(): Promise<Vehicle[]> {
   const { data, error } = await supabase.from("vehicles").select("*").order("daily_price");
