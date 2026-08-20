@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { Check, Loader2 } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
@@ -9,9 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/useAuth";
-import { fetchLocations, fetchOptions, fetchVehicle } from "@/services/api";
+import { createPublicReservation, fetchLocations, fetchOptions, fetchVehicle } from "@/services/api";
 import {
   combineDateTime,
   effectiveDailyRate,
@@ -52,7 +50,6 @@ function BookingPage() {
   const { id } = Route.useParams();
   const search = Route.useSearch();
   const navigate = useNavigate();
-  const { user, loading: authLoading } = useAuth();
 
   const { data: vehicle, isLoading } = useQuery({ queryKey: ["vehicle", id], queryFn: () => fetchVehicle(id) });
   const { data: options = [] } = useQuery({ queryKey: ["options"], queryFn: fetchOptions });
@@ -77,23 +74,6 @@ function BookingPage() {
   const [terms, setTerms] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => {
-    if (!user) return;
-    setEmail((v) => v || user.email || "");
-    supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", user.id)
-      .maybeSingle()
-      .then(({ data }) => {
-        if (!data) return;
-        setFirstName((v) => v || data.first_name || "");
-        setLastName((v) => v || data.last_name || "");
-        setPhone((v) => v || data.phone || "");
-        setAddress((v) => v || data.address || "");
-        setLicense((v) => v || data.license_number || "");
-      });
-  }, [user]);
 
   const startIso = combineDateTime(startDate, startTime);
   const endIso = combineDateTime(endDate, endTime);
@@ -109,58 +89,48 @@ function BookingPage() {
     "h-10 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus:ring-1 focus:ring-ring";
 
   async function submit() {
-    if (!user || !vehicle) return;
+    if (!vehicle) return;
     setSubmitting(true);
-    const { data, error } = await supabase
-      .from("reservations")
-      .insert({
-        user_id: user.id,
-        vehicle_id: vehicle.id,
-        first_name: firstName,
-        last_name: lastName,
-        email,
-        phone,
-        address,
-        license_number: license,
-        pickup_location: pickup || "Paris Centre",
-        dropoff_location: dropoff || pickup || "Paris Centre",
-        start_at: startIso,
-        end_at: endIso,
-        days,
-        daily_rate: rate,
-        options_total: optionsTotal,
-        total,
-      })
-      .select("id, reference")
-      .maybeSingle();
-
-    if (error || !data) {
-      setSubmitting(false);
-      const conflict = error?.message?.includes("reservations_no_overlap");
+    try {
+      const reference = await createPublicReservation(
+        {
+          vehicle_id: vehicle.id,
+          first_name: firstName,
+          last_name: lastName,
+          email,
+          phone,
+          address,
+          license_number: license,
+          pickup_location: pickup || "Paris Centre",
+          dropoff_location: dropoff || pickup || "Paris Centre",
+          start_at: startIso,
+          end_at: endIso,
+          days,
+          daily_rate: rate,
+          options_total: optionsTotal,
+          total,
+        },
+        chosen.map((o) => ({ option_id: o.id, name: o.name, price_per_day: o.price_per_day })),
+      );
+      toast.success("Réservation enregistrée !");
+      navigate({
+        to: "/confirmation/$reference",
+        params: { reference },
+        search: { email },
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "";
       toast.error(
-        conflict
+        message.includes("reservations_no_overlap")
           ? "Ce véhicule n'est pas disponible pour cette période."
-          : (error?.message ?? "La réservation n'a pas pu être enregistrée."),
+          : "La réservation n'a pas pu être enregistrée.",
       );
-      return;
+    } finally {
+      setSubmitting(false);
     }
-
-    if (chosen.length) {
-      await supabase.from("reservation_options").insert(
-        chosen.map((o) => ({
-          reservation_id: data.id,
-          option_id: o.id,
-          name: o.name,
-          price_per_day: o.price_per_day,
-        })),
-      );
-    }
-
-    toast.success("Réservation enregistrée !");
-    navigate({ to: "/confirmation/$reference", params: { reference: data.reference } });
   }
 
-  if (isLoading || authLoading) {
+  if (isLoading) {
     return (
       <SiteLayout>
         <div className="container-page py-16">
@@ -385,20 +355,16 @@ function BookingPage() {
                   </span>
                 </label>
 
-                {!user && (
-                  <div className="mt-6 rounded-xl bg-muted p-4 text-sm">
-                    Connectez-vous pour finaliser votre réservation et la retrouver dans votre espace client.
-                    <Button asChild variant="accent" size="sm" className="ml-3">
-                      <Link to="/auth">Se connecter</Link>
-                    </Button>
-                  </div>
-                )}
+                <p className="mt-6 rounded-xl bg-muted p-4 text-sm text-muted-foreground">
+                  Aucun compte n'est nécessaire : vous recevrez votre numéro de réservation et votre reçu
+                  immédiatement après validation.
+                </p>
 
                 <Button
                   variant="accent"
                   size="lg"
                   className="mt-6 w-full"
-                  disabled={!terms || !user || submitting || days === 0}
+                  disabled={!terms || submitting || days === 0 || !email || !firstName || !lastName || !phone}
                   onClick={submit}
                 >
                   {submitting && <Loader2 className="size-4 animate-spin" />} Confirmer la réservation

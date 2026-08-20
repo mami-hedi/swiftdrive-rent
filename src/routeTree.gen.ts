@@ -19,7 +19,6 @@ import { Route as FaqRouteImport } from './routes/faq'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
-import { Route as AuthenticatedCompteRouteImport } from './routes/_authenticated/compte'
 import { Route as ConfirmationReferenceRouteImport } from './routes/confirmation.$reference'
 import { Route as ReserverIdRouteImport } from './routes/reserver.$id'
 import { Route as VehiculesIndexRouteImport } from './routes/vehicules.index'
@@ -80,11 +79,6 @@ const TermsRoute = TermsRouteImport.update({
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedCompteRoute = AuthenticatedCompteRouteImport.update({
-  id: '/compte',
-  path: '/compte',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const ConfirmationReferenceRoute = ConfirmationReferenceRouteImport.update({
@@ -165,7 +159,6 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
-  '/compte': typeof AuthenticatedCompteRoute
   '/confirmation/$reference': typeof ConfirmationReferenceRoute
   '/reserver/$id': typeof ReserverIdRoute
   '/vehicules/$id': typeof VehiculesIdRoute
@@ -188,7 +181,6 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
-  '/compte': typeof AuthenticatedCompteRoute
   '/confirmation/$reference': typeof ConfirmationReferenceRoute
   '/reserver/$id': typeof ReserverIdRoute
   '/vehicules/$id': typeof VehiculesIdRoute
@@ -214,7 +206,6 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
-  '/_authenticated/compte': typeof AuthenticatedCompteRoute
   '/confirmation/$reference': typeof ConfirmationReferenceRoute
   '/reserver/$id': typeof ReserverIdRoute
   '/vehicules/$id': typeof VehiculesIdRoute
@@ -240,7 +231,6 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/terms'
     | '/admin'
-    | '/compte'
     | '/confirmation/$reference'
     | '/reserver/$id'
     | '/vehicules/$id'
@@ -263,7 +253,6 @@ export interface FileRouteTypes {
     | '/faq'
     | '/privacy'
     | '/terms'
-    | '/compte'
     | '/confirmation/$reference'
     | '/reserver/$id'
     | '/vehicules/$id'
@@ -288,7 +277,6 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/terms'
     | '/_authenticated/admin'
-    | '/_authenticated/compte'
     | '/confirmation/$reference'
     | '/reserver/$id'
     | '/vehicules/$id'
@@ -389,13 +377,6 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/compte': {
-      id: '/_authenticated/compte'
-      path: '/compte'
-      fullPath: '/compte'
-      preLoaderRoute: typeof AuthenticatedCompteRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/confirmation/$reference': {
@@ -512,12 +493,10 @@ const AuthenticatedAdminRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
-  AuthenticatedCompteRoute: typeof AuthenticatedCompteRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
-  AuthenticatedCompteRoute: AuthenticatedCompteRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

@@ -5,13 +5,15 @@ import { SiteLayout } from "@/components/site/SiteLayout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { supabase } from "@/integrations/supabase/client";
 import { STATUS_LABELS, eur, formatDateTime, type Reservation } from "@/lib/domain";
 import { downloadReservationReceipt, receiptBreakdown, receiptNumber } from "@/lib/receipt";
-import { fetchSettings } from "@/services/api";
+import { fetchPublicReservation, fetchSettings } from "@/services/api";
 
 
 export const Route = createFileRoute("/confirmation/$reference")({
+  validateSearch: (search: Record<string, unknown>): { email?: string | undefined } => ({
+    email: typeof search['email'] === "string" ? search['email'] : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Réservation confirmée — Velora Rent" },
@@ -26,17 +28,11 @@ export const Route = createFileRoute("/confirmation/$reference")({
 
 function ConfirmationPage() {
   const { reference } = Route.useParams();
+  const { email } = Route.useSearch();
   const { data, isLoading } = useQuery({
-    queryKey: ["reservation", reference],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("reservations")
-        .select("*, vehicles(id, brand, model, images, category)")
-        .eq("reference", reference)
-        .maybeSingle();
-      if (error) throw error;
-      return data as unknown as Reservation | null;
-    },
+    queryKey: ["reservation", reference, email],
+    queryFn: (): Promise<Reservation | null> => fetchPublicReservation(reference, email ?? ""),
+    enabled: Boolean(email),
   });
   const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: fetchSettings, staleTime: 300_000 });
 
@@ -44,6 +40,8 @@ function ConfirmationPage() {
     if (!data) return;
     downloadReservationReceipt(data, settings ?? {});
   }
+
+
 
 
   return (
@@ -55,10 +53,10 @@ function ConfirmationPage() {
           <div className="rounded-3xl border border-border p-12 text-center">
             <h1 className="text-2xl font-semibold">Réservation introuvable</h1>
             <p className="mt-3 text-muted-foreground">
-              Connectez-vous avec le compte utilisé lors de la réservation pour la consulter.
+              Vérifiez le lien reçu après votre réservation, ou contactez notre équipe avec votre numéro de réservation.
             </p>
             <Button asChild variant="accent" className="mt-6">
-              <Link to="/auth">Se connecter</Link>
+              <Link to="/contact">Contacter l'agence</Link>
             </Button>
           </div>
         ) : (
@@ -113,7 +111,7 @@ function ConfirmationPage() {
 
             <div className="mt-10 flex flex-wrap gap-3">
               <Button asChild variant="accent">
-                <Link to="/compte">Voir mes réservations</Link>
+                <Link to="/vehicules">Retour aux véhicules</Link>
               </Button>
               <Button variant="outline" onClick={downloadSummary}>
                 <Download className="size-4" /> Télécharger le récapitulatif

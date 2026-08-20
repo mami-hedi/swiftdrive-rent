@@ -64,17 +64,14 @@ export function Header() {
             <Link to="/vehicules">Réserver maintenant</Link>
           </Button>
 
-          {user ? (
+          {user && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon" aria-label="Mon compte">
+                <Button variant="outline" size="icon" aria-label="Administration">
                   <User2 className="size-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-52">
-                <DropdownMenuItem asChild>
-                  <Link to="/compte">Espace client</Link>
-                </DropdownMenuItem>
                 {isStaff && (
                   <DropdownMenuItem asChild>
                     <Link to="/admin">
@@ -87,10 +84,6 @@ export function Header() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          ) : (
-            <Button asChild variant="outline" size="sm" className="hidden sm:inline-flex">
-              <Link to="/auth">Connexion</Link>
-            </Button>
           )}
 
           <Sheet open={open} onOpenChange={setOpen}>
@@ -111,13 +104,16 @@ export function Header() {
                     {item.label}
                   </Link>
                 ))}
-                <Link
-                  to={user ? "/compte" : "/auth"}
-                  onClick={() => setOpen(false)}
-                  className="rounded-lg px-3 py-3 text-base font-medium transition-colors hover:bg-muted"
-                >
-                  {user ? "Espace client" : "Connexion"}
-                </Link>
+                {isStaff && (
+                  <Link
+                    to="/admin"
+                    onClick={() => setOpen(false)}
+                    className="rounded-lg px-3 py-3 text-base font-medium transition-colors hover:bg-muted"
+                  >
+                    Administration
+                  </Link>
+                )}
+
                 <Button asChild variant="accent" className="mt-4">
                   <Link to="/vehicules" onClick={() => setOpen(false)}>
                     Réserver maintenant
