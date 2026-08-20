@@ -33,7 +33,7 @@ export function Footer() {
             <li><Link to="/contact" className="hover:text-accent">Contact</Link></li>
             <li><Link to="/terms" className="hover:text-accent">Conditions générales</Link></li>
             <li><Link to="/privacy" className="hover:text-accent">Confidentialité</Link></li>
-            <li><Link to="/auth" className="hover:text-accent">Espace client</Link></li>
+            <li><Link to="/auth" className="hover:text-accent">Espace administration</Link></li>
           </ul>
         </div>
 
