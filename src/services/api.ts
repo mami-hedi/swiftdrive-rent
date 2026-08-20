@@ -38,15 +38,27 @@ export async function fetchBusyRanges(vehicleId: string) {
   return (data ?? []) as { start_at: string; end_at: string }[];
 }
 
-export async function fetchMyReservations(userId: string): Promise<Reservation[]> {
-  const { data, error } = await supabase
-    .from("reservations")
-    .select("*, vehicles(id, brand, model, images, category)")
-    .eq("user_id", userId)
-    .order("start_at", { ascending: false });
+export async function createPublicReservation(
+  payload: Record<string, unknown>,
+  options: Record<string, unknown>[],
+): Promise<string> {
+  const { data, error } = await supabase.rpc("create_public_reservation", {
+    _payload: payload as never,
+    _options: options as never,
+  });
   if (error) throw error;
-  return (data ?? []) as unknown as Reservation[];
+  return data as unknown as string;
 }
+
+export async function fetchPublicReservation(reference: string, email: string): Promise<Reservation | null> {
+  const { data, error } = await supabase.rpc("get_public_reservation", {
+    _reference: reference,
+    _email: email,
+  });
+  if (error) throw error;
+  return (data ?? null) as unknown as Reservation | null;
+}
+
 
 export async function fetchAllReservations(): Promise<Reservation[]> {
   const { data, error } = await supabase
