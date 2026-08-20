@@ -12,6 +12,9 @@ import { fetchSettings } from "@/services/api";
 
 
 export const Route = createFileRoute("/confirmation/$reference")({
+  validateSearch: (search: Record<string, unknown>): { email?: string | undefined } => ({
+    email: typeof search['email'] === "string" ? search['email'] : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Réservation confirmée — Velora Rent" },
@@ -26,17 +29,11 @@ export const Route = createFileRoute("/confirmation/$reference")({
 
 function ConfirmationPage() {
   const { reference } = Route.useParams();
+  const { email } = Route.useSearch();
   const { data, isLoading } = useQuery({
-    queryKey: ["reservation", reference],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("reservations")
-        .select("*, vehicles(id, brand, model, images, category)")
-        .eq("reference", reference)
-        .maybeSingle();
-      if (error) throw error;
-      return data as unknown as Reservation | null;
-    },
+    queryKey: ["reservation", reference, email],
+    queryFn: () => fetchPublicReservation(reference, email ?? ""),
+    enabled: Boolean(email),
   });
   const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: fetchSettings, staleTime: 300_000 });
 
@@ -44,6 +41,8 @@ function ConfirmationPage() {
     if (!data) return;
     downloadReservationReceipt(data, settings ?? {});
   }
+
+
 
 
   return (
